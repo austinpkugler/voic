@@ -21,9 +21,21 @@ def new_document():
 def edit_document():
     return flask.render_template('forms/edit-document.html')
 
-@app.route('/sign-in')
+@app.route('/sign-in', methods=['GET', 'POST'])
 def sign_in():
-    return flask.render_template('forms/sign-in.html')
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('home'))
+
+    form = forms.LoginForm()
+    # if form.validate_on_submit():
+    #     user = User.query.filter_by(email=form.email.data).first()
+    #     if user and bcrypt.check_password_hash(user.password, form.password.data):
+    #         login_user(user, remember=form.remember.data)
+    #         next_page = request.args.get('next')
+    #         return redirect(next_page) if next_page else redirect(url_for('home'))
+    #     else:
+    #         flash(f'Incorrect email or password.', 'danger')
+    return flask.render_template('forms/sign-in.html', title='Sign In', form=form)
 
 @app.route('/sign-up')
 def sign_up():
