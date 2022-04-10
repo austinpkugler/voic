@@ -105,7 +105,6 @@ def account():
             selected_role_ids.append(role.id)
 
         form.roles.default = selected_role_ids
-        print(f"SELECTED ROLE IDS {selected_role_ids}")
         form.process()
         form.username.data = flask_login.current_user.username
         form.email.data = flask_login.current_user.email
@@ -145,7 +144,15 @@ def edit_document(document_id):
         flask.flash('Your document was edited!', 'success')
         return flask.redirect(flask.url_for('home'))
     elif flask.request.method == 'GET':
-        print("ITS GET METHOD")
         form.title.data = document.title
         form.content.data = document.content
     return flask.render_template('forms/edit-document.html', title='Edit Document', form=form)
+
+
+@app.route('/delete-document/<int:document_id>')
+@flask_login.login_required
+def delete_document(document_id):
+    db.session.delete(models.Document.query.get(document_id))
+    db.session.commit()
+    flask.flash('Document was deleted!', 'success')
+    return flask.redirect(flask.url_for('home'))
