@@ -10,7 +10,8 @@ from wtforms import (
     PasswordField,
     StringField,
     SubmitField,
-    TextAreaField
+    TextAreaField,
+    SelectMultipleField
 )
 from wtforms.validators import (
     DataRequired,
@@ -52,6 +53,7 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    roles = SelectMultipleField('Select All Roles', choices=['Engineer', 'HR'])
     submit = SubmitField('Update')
 
     def validate_username(self, username):
