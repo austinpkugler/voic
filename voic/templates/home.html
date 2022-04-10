@@ -1,47 +1,33 @@
 {% extends "base.html" %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='search-bar.css') }}">
 
 {% block content %}
-<!-- IF USER NOT LOGGED IN -->
-<h1>VOIC - Virtual Office In The Cloud</h1>
-  <p>VOIC is a project created by Austin Kugler and Hayden Carroll for CS360 at 
-      the University of Idaho for Spring of 2022. This implementation is based off of
-    a research paper by Dr. Hasan Jamil.</p>
-
-<!-- IF USER LOGGED IN -->
-<h1>My Documents</h1>
+  {% if current_user.is_authenticated %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='search-bar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <div class="input-group">
-      <div class="form-outline flex-fill">
-        <input type="search" id="form1" class="form-control form-control-lg" />
-      </div>
-      <button type="button" class="btn btn-success">
-        Search
-        <!-- <i class="fas fa-search"></i> -->
-      </button>
+    <h1>My Documents</h1>
+    <div class="input-group rounded mb-4">
+      <input type="search" class="form-control rounded mr-2" placeholder="" aria-label="Search" aria-describedby="search-addon" />
+      <a class="btn btn-outline-info mr-2" href="{{ url_for('home') }}">Search</a>
+      <a class="btn btn-outline-info mr-2" href="{{ url_for('new_document') }}">Create</a>
     </div>
-<div class="my-documents-container">
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-  <div class="document-container">
-  </div>
-</div>
+    {% for document in documents %}
+      <article class="media content-section">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="#">{{ document.creator_id }}</a>
+            <small class="text-muted">{{ document.created_at.strftime('%Y-%m-%d') }}</small>
+          </div>
+          <h2><a class="article-title" href="#">{{ document.title }}</a></h2>
+          <p class="article-content">{{ document.content }}</p>
+        </div>
+      </article>
+    {% endfor %}
+  {% else %}
+    <h1>VOiC - Virtual Office In The Cloud</h1>
+    <p>
+      VOiC is a project created by Austin Kugler and Hayden Carroll for CS360 at 
+      the University of Idaho for Spring of 2022. This implementation is based off of
+      a research paper by Dr. Hasan Jamil.
+    </p>
+  {% endif %}
 {% endblock %}

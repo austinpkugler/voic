@@ -1,16 +1,9 @@
-'''
-User-Document many-to-many
-Document-Role many-to-many
-User-Role one-to-many
-
-'''
 import flask_login
-from flask_sqlalchemy import SQLAlchemy
 
 from dataclasses import dataclass
 from datetime import datetime
 
-from voic import db
+from voic import db, login_manager
 
 
 users_documents = db.Table(
@@ -28,6 +21,11 @@ roles_documents = db.Table(
     db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
     db.Column('document_id', db.Integer, db.ForeignKey('document.id'))
 )
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @dataclass
