@@ -64,6 +64,8 @@ class Document(db.Model):
     title = db.Column(db.String(100), nullable=False, unique=True)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
 
     def __repr__(self):
         return f'Document(id={self.id}, title={self.title})'

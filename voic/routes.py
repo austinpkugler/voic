@@ -2,6 +2,7 @@ import flask
 import flask_login
 from PIL import Image
 
+from datetime import datetime, timezone
 import os
 import secrets
 
@@ -27,7 +28,7 @@ def home():
         documents = flask_login.current_user.documents
         for role in flask_login.current_user.roles:
             documents += role.documents
-        documents.sort(key=lambda d: d.created_at, reverse=True)
+        documents.sort(key=lambda d: d.updated_at, reverse=True)
         return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
     else:
         return flask.render_template('home.html', title='Virtual Office in the Cloud')
@@ -70,14 +71,15 @@ def sign_in():
 
 
 @app.route('/sign-out')
+@flask_login.login_required
 def sign_out():
     flask_login.logout_user()
     flask.flash('You have been signed out!', 'success')
     return flask.redirect(flask.url_for('home'))
 
 
-@flask_login.login_required
 @app.route('/account', methods=['GET', 'POST'])
+@flask_login.login_required
 def account():
     form = forms.UpdateAccountForm()
     if form.validate_on_submit():
@@ -111,8 +113,8 @@ def account():
     return flask.render_template('forms/account.html', title='Account', picture=picture, form=form)
 
 
-@flask_login.login_required
 @app.route('/new-document', methods=['GET', 'POST'])
+@flask_login.login_required
 def new_document():
     form = forms.DocumentForm()
     if form.validate_on_submit():
@@ -122,11 +124,28 @@ def new_document():
         db.session.commit()
         flask.flash('Your document was created!', 'success')
         return flask.redirect(flask.url_for('home'))
+    return flask.render_template('forms/new-document.html', title='New Document', form=form)
 
-    return flask.render_template('forms/new-document.html', title='New Document', form=form, legend='New Document')
 
-
+@app.route('/edit-document/<int:document_id>', methods=['GET', 'POST'])
 @flask_login.login_required
-@app.route('/edit-document')
-def edit_document():
-    return flask.render_template('forms/edit-document.html')
+def edit_document(document_id):
+    document = models.Document.query.get(document_id)
+    if flask_login.current_user not in document.user:
+        if not set(flask_login.current_user.role).intersection(document.role):
+            flask.flash('You do not have the permissions to edit this document.', 'danger')
+            return flask.redirect(flask.url_for('home'))
+
+    form = forms.DocumentForm()
+    if form.validate_on_submit():
+        document.title = form.title.data
+        document.content = form.content.data
+        document.updated_at = datetime.now(timezone.utc)
+        db.session.commit()
+        flask.flash('Your document was edited!', 'success')
+        return flask.redirect(flask.url_for('home'))
+    elif flask.request.method == 'GET':
+        print("ITS GET METHOD")
+        form.title.data = document.title
+        form.content.data = document.content
+    return flask.render_template('forms/edit-document.html', title='Edit Document', form=form)
