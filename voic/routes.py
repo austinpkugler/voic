@@ -86,12 +86,24 @@ def account():
 
         flask_login.current_user.username = form.username.data
         flask_login.current_user.email = form.email.data
+
+        for role_title in form.roles.data:
+            role = models.Role.query.filter_by(title=role_title).first()
+            flask_login.current_user.roles.append(role)
+
         db.session.commit()
+
         flask.flash('Your account has been updated!', 'success')
         return flask.redirect(flask.url_for('account'))
     elif flask.request.method == 'GET':
+        selected_role_ids = []
+        for role in flask_login.current_user.roles:
+            selected_role_ids.append((role.id, role.title))
+
         form.username.data = flask_login.current_user.username
         form.email.data = flask_login.current_user.email
+        form.roles.default = selected_role_ids
+        # form.process()
 
     picture = flask.url_for('static', filename=os.path.join('img', flask_login.current_user.picture))
     return flask.render_template('forms/account.html', title='Account', picture=picture, form=form)
