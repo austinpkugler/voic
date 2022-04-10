@@ -23,8 +23,11 @@ def save_picture(picture_data):
 @app.route('/')
 @app.route('/home')
 def home():
-    documents = flask_login.current_user.documents
-    return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
+    if flask_login.current_user.is_authenticated:
+        documents = flask_login.current_user.documents
+        return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
+    else:
+        return flask.render_template('home.html', title='Virtual Office in the Cloud')
 
 
 @app.route('/sign-up', methods=['GET', 'POST'])
