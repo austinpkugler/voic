@@ -10,7 +10,6 @@ from wtforms import (
     PasswordField,
     StringField,
     SubmitField,
-    TextAreaField,
     SelectMultipleField
 )
 from wtforms.validators import (
@@ -50,10 +49,16 @@ class SignInForm(flask_wtf.FlaskForm):
 
 
 class UpdateAccountForm(flask_wtf.FlaskForm):
+
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    roles = SelectMultipleField('Select All Roles', choices=['Engineer', 'HR'])
+
+    all_role_titles = []
+    for role in models.Role.query.all():
+        all_role_titles.append((role.id, role.title))
+
+    roles = SelectMultipleField('Select All Roles', choices=all_role_titles, coerce=int)
     submit = SubmitField('Update')
 
     def validate_username(self, username):

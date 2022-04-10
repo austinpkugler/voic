@@ -25,6 +25,9 @@ def save_picture(picture_data):
 def home():
     if flask_login.current_user.is_authenticated:
         documents = flask_login.current_user.documents
+        for role in flask_login.current_user.roles:
+            documents += role.documents
+        documents.sort(key=lambda d: d.created_at, reverse=True)
         return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
     else:
         return flask.render_template('home.html', title='Virtual Office in the Cloud')
@@ -83,13 +86,26 @@ def account():
 
         flask_login.current_user.username = form.username.data
         flask_login.current_user.email = form.email.data
+
+        flask_login.current_user.roles = []
+        for role_id in form.roles.data:
+            role = models.Role.query.filter_by(id=role_id).first()
+            flask_login.current_user.roles.append(role)
+
         db.session.commit()
+
         flask.flash('Your account has been updated!', 'success')
         return flask.redirect(flask.url_for('account'))
     elif flask.request.method == 'GET':
+        selected_role_ids = []
+        for role in flask_login.current_user.roles:
+            selected_role_ids.append(role.id)
+
+        form.roles.default = selected_role_ids
+        print(f"SELECTED ROLE IDS {selected_role_ids}")
+        form.process()
         form.username.data = flask_login.current_user.username
         form.email.data = flask_login.current_user.email
-
     picture = flask.url_for('static', filename=os.path.join('img', flask_login.current_user.picture))
     return flask.render_template('forms/account.html', title='Account', picture=picture, form=form)
 
