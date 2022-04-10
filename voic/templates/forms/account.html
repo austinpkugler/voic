@@ -49,6 +49,19 @@
             {% endfor %}
           {% endif %}
         </div>
+        <div class="form-group">
+            {{ form.roles.label(class="form-control-label") }}
+            {% if form.roles.errors %}
+              {{ form.email(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.roles.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.roles(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
       </fieldset>
       <div class="form-group">
         {{ form.submit(class="btn btn-outline-info") }}
