@@ -14,20 +14,28 @@
       <article class="media content-section">
         <div class="media-body">
           <div class="article-metadata">
-            <a class="mr-2" href="#">{{ document.creator_id }}</a>
-            <small class="text-muted">{{ document.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+            Users:
+            {% for user in document.user %}
+              <a class="mr-2" href="#">{{ user.username }}</a>
+            {% endfor %}
+            Roles:
+            {% for role in document.role %}
+              <a class="mr-2" href="#">{{ role.title }}</a>
+            {% endfor %}
+            <small class="text-muted float-right">Created at {{ document.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
           </div>
-          <h2><a class="article-title" href="#">{{ document.title }}</a></h2>
+          <a class="btn btn-outline-danger btn-sm float-right" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
+          <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('edit_document', document_id=document.id) }}">Edit</a>
+          <h3><a class="article-title" href="#">{{ document.title }}</a></h3>
           <p class="article-content">{{ document.content }}</p>
         </div>
       </article>
     {% endfor %}
   {% else %}
     <h1>VOiC - Virtual Office In The Cloud</h1>
+    <h4>A Project by Hayden Carroll and Austin Kugler</h4>
     <p>
-      VOiC is a project created by Austin Kugler and Hayden Carroll for CS360 at 
-      the University of Idaho for Spring of 2022. This implementation is based off of
-      a research paper by Dr. Hasan Jamil.
+      While almost all of the documents we write, read, share, act on, process or archive are digital, their management remains archaic. In VOiC, we make provisions to support decision workflows, virtual office and provenance and privacy based on role-based authorization. The system is based upon a recently proposed model for document management in virtual offices.
     </p>
   {% endif %}
 {% endblock %}
