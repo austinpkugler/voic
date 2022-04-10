@@ -58,7 +58,7 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
     for role in models.Role.query.all():
         all_role_titles.append((role.id, role.title))
 
-    roles = SelectMultipleField('Select All Roles', choices=all_role_titles)
+    roles = SelectMultipleField('Select All Roles', choices=all_role_titles, coerce=int)
     submit = SubmitField('Update')
 
     def validate_username(self, username):
