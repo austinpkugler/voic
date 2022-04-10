@@ -25,6 +25,9 @@ def save_picture(picture_data):
 def home():
     if flask_login.current_user.is_authenticated:
         documents = flask_login.current_user.documents
+        for role in flask_login.current_user.roles:
+            documents += role.documents
+        documents.sort(key=lambda d: d.created_at, reverse=True)
         return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
     else:
         return flask.render_template('home.html', title='Virtual Office in the Cloud')
