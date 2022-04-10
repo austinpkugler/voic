@@ -41,7 +41,7 @@ def sign_up():
         user = models.User(username=form.username.data, email=form.email.data, password=password_hash)
         db.session.add(user)
         db.session.commit()
-        flask.flash(f'Your account was created! You are now signed in.', 'success')
+        flask.flash(f'Your account was created! You may now sign in.', 'success')
         return flask.redirect(flask.url_for('sign_in'))
 
     return flask.render_template('forms/sign-up.html', title='Sign Up', form=form)
