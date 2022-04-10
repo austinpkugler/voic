@@ -1,6 +1,6 @@
 import flask
 import flask_login
-import PIL
+from PIL import Image
 
 import os
 import secrets
@@ -14,7 +14,7 @@ def save_picture(picture_data):
     picture = random_hex + filetype
     path = os.path.join(app.root_path, 'static', 'img', picture)
     output_size = (125, 125)
-    image = PIL.Image.open(picture_data)
+    image = Image.open(picture_data)
     image.thumbnail(output_size)
     image.save(path)
     return picture
@@ -64,11 +64,12 @@ def sign_in():
 @app.route('/sign-out')
 def sign_out():
     flask_login.logout_user()
+    flask.flash('You have been signed out!', 'success')
     return flask.redirect(flask.url_for('home'))
 
 
-@app.route('/account')
 @flask_login.login_required
+@app.route('/account', methods=['GET', 'POST'])
 def account():
     form = forms.UpdateAccountForm()
     if form.validate_on_submit():
@@ -85,17 +86,17 @@ def account():
         form.username.data = flask_login.current_user.username
         form.email.data = flask_login.current_user.email
 
-    picture = flask.url_for('static', filename=os.path.join('assets', flask_login.current_user.picture))
+    picture = flask.url_for('static', filename=os.path.join('img', flask_login.current_user.picture))
     return flask.render_template('forms/account.html', title='Account', picture=picture, form=form)
 
 
-@app.route('/new-document')
 @flask_login.login_required
+@app.route('/new-document')
 def new_document():
     return flask.render_template('forms/new-document.html')
 
 
-@app.route('/edit-document')
 @flask_login.login_required
+@app.route('/edit-document')
 def edit_document():
     return flask.render_template('forms/edit-document.html')
