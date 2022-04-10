@@ -1,5 +1,6 @@
 import flask
 import flask_bcrypt
+import flask_ckeditor
 import flask_login
 import flask_sqlalchemy
 
@@ -13,5 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///voic.db'
 db = flask_sqlalchemy.SQLAlchemy(app)
 bcrypt = flask_bcrypt.Bcrypt(app)
 login_manager = flask_login.LoginManager(app)
+ckeditor = flask_ckeditor.CKEditor(app)
 
 from voic import routes

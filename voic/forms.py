@@ -1,5 +1,6 @@
 import flask_login
 import flask_wtf
+from flask_ckeditor import CKEditorField
 from flask_wtf.file import (
     FileField,
     FileAllowed
@@ -8,7 +9,8 @@ from wtforms import (
     BooleanField,
     PasswordField,
     StringField,
-    SubmitField
+    SubmitField,
+    TextAreaField
 )
 from wtforms.validators import (
     DataRequired,
@@ -63,3 +65,9 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
             user = models.User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Email already exists.')
+
+
+class DocumentForm(flask_wtf.FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = CKEditorField('Content', validators=[DataRequired()])
+    submit = SubmitField('Create')
