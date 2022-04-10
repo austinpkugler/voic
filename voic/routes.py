@@ -9,10 +9,6 @@ from voic import forms
 def home():
     return flask.render_template('home.html')
 
-@app.route('/my-documents')
-def my_documents():
-    return flask.render_template('my-documents.html')
-
 @app.route('/new-document')
 def new_document():
     return flask.render_template('forms/new-document.html')
