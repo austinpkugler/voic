@@ -23,7 +23,8 @@ def save_picture(picture_data):
 @app.route('/')
 @app.route('/home')
 def home():
-    return flask.render_template('home.html', title='Virtual Office in the Cloud')
+    documents = flask_login.current_user.documents
+    return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
 
 
 @app.route('/sign-up', methods=['GET', 'POST'])
