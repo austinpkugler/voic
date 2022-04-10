@@ -1,6 +1,47 @@
 {% extends "base.html" %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='search-bar.css') }}">
 
 {% block content %}
-  <h1>This the home page</h1>
-  <p>Content.</p>
+<!-- IF USER NOT LOGGED IN -->
+<h1>VOIC - Virtual Office In The Cloud</h1>
+  <p>VOIC is a project created by Austin Kugler and Hayden Carroll for CS360 at 
+      the University of Idaho for Spring of 2022. This implementation is based off of
+    a research paper by Dr. Hasan Jamil.</p>
+
+<!-- IF USER LOGGED IN -->
+<h1>My Documents</h1>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <div class="input-group">
+      <div class="form-outline flex-fill">
+        <input type="search" id="form1" class="form-control form-control-lg" />
+      </div>
+      <button type="button" class="btn btn-success">
+        Search
+        <!-- <i class="fas fa-search"></i> -->
+      </button>
+    </div>
+<div class="my-documents-container">
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+  <div class="document-container">
+  </div>
+</div>
 {% endblock %}
