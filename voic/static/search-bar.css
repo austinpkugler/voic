@@ -1,0 +1,31 @@
+.form-outline .form-control:focus~.form-notch .form-notch-leading {
+    border-top: 0.125rem solid #00b74a;
+    border-bottom: 0.125rem solid #00b74a;
+    border-left: 0.125rem solid #00b74a;
+  }
+  .form-outline .form-control:focus~.form-notch .form-notch-middle {
+    border-color: #00b74a;
+  }
+  .form-outline .form-control:focus~.form-notch .form-notch-trailing {
+    border-top: 0.125rem solid #00b74a;
+    border-bottom: 0.125rem solid #00b74a;
+    border-right: 0.125rem solid #00b74a;
+  }
+  .form-outline .form-control:focus~.form-label {
+    color: #00b74a;
+  }
+  .autocomplete-input.focused~.form-notch .form-notch-leading {
+    border-top: 2px solid #00b74a;
+    border-bottom: 2px solid #00b74a;
+    border-left: 2px solid #00b74a;
+    transition: all 0.2s linear;
+  }
+  .autocomplete-input.focused~.form-notch .form-notch-middle {
+    border-color: #00b74a;
+  }
+  .autocomplete-input.focused~.form-notch .form-notch-trailing {
+    border-color: #00b74a;
+  }
+  .autocomplete-input.focused~.autocomplete-label {
+    color: #00b74a;
+  }
