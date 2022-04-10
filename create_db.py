@@ -9,7 +9,7 @@ if __name__ == '__main__':
     hr_role = models.Role(title='hr')
     db.session.add(hr_role)
 
-    admin_user = models.User(username='admin', password='admin', email='admin@admin.com')
+    admin_user = models.User(username='admin', password='admin',email='admin@admin.com')
     admin_user.roles.append(hr_role)
     db.session.add(admin_user)
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     bill_user.roles.append(engineer_role)
     db.session.add(bill_user)
 
-    design_document = models.Document(creator_id=1, title='Design plan', content='Here is how to do it')
+    design_document = models.Document(creator_id=1, title='Design plan', content='Content')
     admin_user.documents.append(design_document)
     hayden_user.documents.append(design_document)
     engineer_role.documents.append(design_document)
