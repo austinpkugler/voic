@@ -37,7 +37,7 @@ def sign_up():
         user = models.User(username=form.username.data, email=form.email.data, password=password_hash)
         db.session.add(user)
         db.session.commit()
-        flask.flash(f'Your account was created! You can now sign in.', 'success')
+        flask.flash(f'Your account was created! You are now signed in.', 'success')
         return flask.redirect(flask.url_for('sign_in'))
 
     return flask.render_template('forms/sign-up.html', title='Sign Up', form=form)
@@ -91,9 +91,18 @@ def account():
 
 
 @flask_login.login_required
-@app.route('/new-document')
+@app.route('/new-document', methods=['GET', 'POST'])
 def new_document():
-    return flask.render_template('forms/new-document.html')
+    form = forms.DocumentForm()
+    if form.validate_on_submit():
+        document = models.Document(title=form.title.data, content=form.content.data, creator_id=flask_login.current_user.id)
+        db.session.add(document)
+        flask_login.current_user.documents.append(document)
+        db.session.commit()
+        flask.flash('Your document was created!', 'success')
+        return flask.redirect(flask.url_for('home'))
+
+    return flask.render_template('forms/new-document.html', title='New Document', form=form, legend='New Document')
 
 
 @flask_login.login_required
