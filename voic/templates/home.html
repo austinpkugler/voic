@@ -16,11 +16,11 @@
           <div class="article-metadata">
             Users:
             {% for user in document.user %}
-              <a class="mr-2" href="#">{{ user.username }}</a>
+              {{ user.username }}
             {% endfor %}
             Roles:
             {% for role in document.role %}
-              <a class="mr-2" href="#">{{ role.title }}</a>
+              {{ role.title }}
             {% endfor %}
             <small class="text-muted float-right">Updated at {{ document.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
           </div>

@@ -75,7 +75,7 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
 
 class DocumentForm(flask_wtf.FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    content = CKEditorField('Content', validators=[DataRequired()])
+    content = CKEditorField('Content')
     submit = SubmitField('Save')
     
     _all_role_titles = []
