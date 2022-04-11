@@ -39,11 +39,24 @@
             {% for error in form.roles.errors %}
               <span>{{ error }}</span>
             {% endfor %}
-          </div>
+      </div>
         {% else %}
           {{ form.roles(class="form-control form-control-lg") }}
         {% endif %}
-    </div>
+        </div>
+      <div class="form-group">
+        {{ form.users.label(class="form-control-label") }}
+        {% if form.users.errors %}
+          {{ form.users(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.users.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ form.users(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
     </fieldset>
     <div class="form-group">
       {{ form.submit(class="btn btn-outline-info") }}
@@ -51,5 +64,5 @@
   </form>
 </div>
 {{ ckeditor.load() }}
-{{ ckeditor.config(name='content') }}
+{{ ckeditor.config(name='content')}}
 {% endblock content %}
