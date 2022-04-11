@@ -28,8 +28,12 @@ def home():
         documents = flask_login.current_user.documents
         for role in flask_login.current_user.roles:
             documents += role.documents
-        documents.sort(key=lambda d: d.updated_at, reverse=True)
-        return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
+        
+        unique_documents = [] # uses list comprehension to remove duplicates.
+        [unique_documents.append(x) for x in documents if x not in unique_documents]
+        unique_documents.sort(key=lambda d: d.updated_at, reverse=True) # sorts newest to oldest.
+
+        return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=unique_documents)
     else:
         return flask.render_template('home.html', title='Virtual Office in the Cloud')
 
