@@ -92,7 +92,7 @@ def account():
 
         flask_login.current_user.roles = [models.Role.query.filter_by(title='employee').first()]
         for role_id in form.roles.data:
-            role = models.Role.query.filter_by(id=role_id).first()
+            role = models.Role.query.get(role_id)
             flask_login.current_user.roles.append(role)
 
         db.session.commit()
@@ -120,6 +120,11 @@ def new_document():
         document = models.Document(title=form.title.data, content=form.content.data, creator_id=flask_login.current_user.id)
         db.session.add(document)
         flask_login.current_user.documents.append(document)
+
+        document.role = []
+        for role_id in form.roles.data:
+            role = models.Role.query.get(role_id)
+            document.role.append(role)
         db.session.commit()
         flask.flash('Your document was created!', 'success')
         return flask.redirect(flask.url_for('home'))
@@ -140,10 +145,21 @@ def edit_document(document_id):
         document.title = form.title.data
         document.content = form.content.data
         document.updated_at = datetime.now(timezone.utc)
+
+        document.role = []
+        for role_id in form.roles.data:
+            role = models.Role.query.get(role_id)
+            document.role.append(role)
+    
         db.session.commit()
         flask.flash('Your document was edited!', 'success')
         return flask.redirect(flask.url_for('home'))
     elif flask.request.method == 'GET':
+        selected_role_ids = []
+        for role in document.role:
+            selected_role_ids.append(role.id)
+        form.roles.default = selected_role_ids
+        form.process()
         form.title.data = document.title
         form.content.data = document.content
     return flask.render_template('forms/edit-document.html', title='Edit Document', form=form)
