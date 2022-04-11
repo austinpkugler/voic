@@ -120,20 +120,29 @@ def account():
 @app.route('/new-document', methods=['GET', 'POST'])
 @flask_login.login_required
 def new_document():
+    document = models.Document()
     form = forms.DocumentForm()
     if form.validate_on_submit():
-        document = models.Document(title=form.title.data, content=form.content.data, creator_id=flask_login.current_user.id)
-        db.session.add(document)
-        flask_login.current_user.documents.append(document)
+        document.title = form.title.data
+        document.content = markupsafe.Markup(form.content.data)
+        document.updated_at = datetime.now(timezone.utc)
+        document.creator_id = flask_login.current_user.id
 
         document.role = []
         for role_id in form.roles.data:
             role = models.Role.query.get(role_id)
             document.role.append(role)
+    
+        document.user = []
+        for user_id in form.users.data:
+            user = models.User.query.get(user_id)
+            document.user.append(user)
+        
+        db.session.add(document)
         db.session.commit()
         flask.flash('Your document was created!', 'success')
         return flask.redirect(flask.url_for('home'))
-    return flask.render_template('forms/new-document.html', title='New Document', form=form)
+    return flask.render_template('forms/document.html', title='New Document', form=form)
 
 
 @app.route('/edit-document/<int:document_id>', methods=['GET', 'POST'])
@@ -141,7 +150,7 @@ def new_document():
 def edit_document(document_id):
     document = models.Document.query.get(document_id)
     if flask_login.current_user not in document.user:
-        if not set(flask_login.current_user.role).intersection(document.role):
+        if not set(flask_login.current_user.roles).intersection(document.role):
             flask.flash('You do not have the permissions to edit this document.', 'danger')
             return flask.redirect(flask.url_for('home'))
 
@@ -156,6 +165,11 @@ def edit_document(document_id):
             role = models.Role.query.get(role_id)
             document.role.append(role)
     
+        document.user = []
+        for user_id in form.users.data:
+            user = models.User.query.get(user_id)
+            document.user.append(user)
+    
         db.session.commit()
         flask.flash('Your document was edited!', 'success')
         return flask.redirect(flask.url_for('home'))
@@ -163,11 +177,17 @@ def edit_document(document_id):
         selected_role_ids = []
         for role in document.role:
             selected_role_ids.append(role.id)
+        
+        selected_user_ids = []
+        for user in document.user:
+            selected_user_ids.append(user.id)
+
         form.roles.default = selected_role_ids
+        form.users.default = selected_user_ids
         form.process()
         form.title.data = document.title
         form.content.data = document.content
-    return flask.render_template('forms/edit-document.html', title='Edit Document', form=form)
+    return flask.render_template('forms/document.html', title='Edit Document', form=form)
 
 
 @app.route('/delete-document/<int:document_id>')
