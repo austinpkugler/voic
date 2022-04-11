@@ -197,3 +197,17 @@ def delete_document(document_id):
     db.session.commit()
     flask.flash('Document was deleted!', 'success')
     return flask.redirect(flask.url_for('home'))
+
+
+@app.route('/duplicate-document/<int:document_id>')
+@flask_login.login_required
+def duplicate_document(document_id):
+    # db.session.delete(models.Document.query.get(document_id))
+    d = models.Document.query.get(document_id)
+    duplicate = models.Document(title=d.title, content=d.content, creator_id=d.creator_id)
+    duplicate.role = d.role
+    duplicate.user = d.user
+    db.session.add(duplicate)
+    db.session.commit()
+    flask.flash('Document was duplicated!', 'success')
+    return flask.redirect(flask.url_for('home'))
