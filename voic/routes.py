@@ -202,7 +202,6 @@ def delete_document(document_id):
 @app.route('/duplicate-document/<int:document_id>')
 @flask_login.login_required
 def duplicate_document(document_id):
-    # db.session.delete(models.Document.query.get(document_id))
     d = models.Document.query.get(document_id)
     duplicate = models.Document(title=d.title, content=d.content, creator_id=d.creator_id)
     duplicate.role = d.role
@@ -210,4 +209,14 @@ def duplicate_document(document_id):
     db.session.add(duplicate)
     db.session.commit()
     flask.flash('Document was duplicated!', 'success')
+    return flask.redirect(flask.url_for('home'))
+
+
+@app.route('/delete-all-documents/')
+@flask_login.login_required
+def delete_all_documents():
+    for document in flask_login.current_user.documents:
+        db.session.delete(models.Document.query.get(document.id))
+    db.session.commit()
+    flask.flash('All documents were deleted!', 'success')
     return flask.redirect(flask.url_for('home'))

@@ -11,6 +11,7 @@
     </div>
     <div class="input-group rounded mb-2">
       <a class="btn btn-outline-info mr-2" href="{{ url_for('new_document') }}">Create</a>
+      <a class="btn btn-outline-danger mr-2" href="{{ url_for('delete_all_documents') }}">Delete All</a>
     </div>
     {% for document in documents %}
       <article class="media content-section">
