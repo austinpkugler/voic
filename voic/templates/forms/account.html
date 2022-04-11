@@ -12,7 +12,7 @@
     <form method="POST" action="" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       <fieldset class="form-group">
-        <legend class="border-bottom mb-4">Your Account</legend>
+        <legend class="border-bottom mb-2">Your Account</legend>
         <div class="form-group">
           {{ form.username.label(class="form-control-label") }}
           {% if form.username.errors %}
@@ -65,6 +65,7 @@
       </fieldset>
       <div class="form-group">
         {{ form.submit(class="btn btn-outline-info") }}
+        <a class="btn btn-outline-danger mr-2" href="{{ url_for('home') }}">Cancel</a>
       </div>
     </form>
   </div>
