@@ -77,3 +77,10 @@ class DocumentForm(flask_wtf.FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = CKEditorField('Content', validators=[DataRequired()])
     submit = SubmitField('Save')
+    
+    _all_role_titles = []
+    for role in models.Role.query.all():
+        _all_role_titles.append((role.id, role.title))
+
+    roleFieldText = 'Select Roles that can Read, Edit, and Delete this Document'
+    roles = SelectMultipleField(roleFieldText, choices=_all_role_titles, coerce=int)
