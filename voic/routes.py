@@ -48,7 +48,7 @@ def sign_up():
     if form.validate_on_submit():
         password_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = models.User(username=form.username.data, email=form.email.data, password=password_hash)
-        user.roles = [models.Role.query.filter_by(title='employee').first()]
+        user.roles = [models.Role.query.filter_by(title='Employee').first()]
         db.session.add(user)
         db.session.commit()
         flask.flash(f'Your account was created! You may now sign in.', 'success')
@@ -95,7 +95,7 @@ def account():
         flask_login.current_user.username = form.username.data
         flask_login.current_user.email = form.email.data
 
-        flask_login.current_user.roles = [models.Role.query.filter_by(title='employee').first()]
+        flask_login.current_user.roles = [models.Role.query.filter_by(title='Employee').first()]
         for role_id in form.roles.data:
             role = models.Role.query.get(role_id)
             flask_login.current_user.roles.append(role)
