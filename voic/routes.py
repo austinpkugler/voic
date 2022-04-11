@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import os
 import secrets
 
-from voic import app, db, bcrypt, forms, models
+from voic import app, db, bcrypt, models
 
 
 def save_picture(picture_data):
@@ -29,7 +29,7 @@ def home():
         documents = flask_login.current_user.documents
         for role in flask_login.current_user.roles:
             documents += role.documents
-        
+
         # gets rid of duplicates by using sets
         documents = list(set(documents))
         documents.sort(key=lambda d: d.updated_at, reverse=True) # sorts newest to oldest.
@@ -41,10 +41,11 @@ def home():
 
 @app.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
+    from voic.forms import SignUpForm
     if flask_login.current_user.is_authenticated:
         return flask.redirect(flask.url_for('home'))
 
-    form = forms.SignUpForm()
+    form = SignUpForm()
     if form.validate_on_submit():
         password_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = models.User(username=form.username.data, email=form.email.data, password=password_hash)
@@ -59,10 +60,11 @@ def sign_up():
 
 @app.route('/sign-in', methods=['GET', 'POST'])
 def sign_in():
+    from voic.forms import SignInForm
     if flask_login.current_user.is_authenticated:
         return flask.redirect(flask.url_for('home'))
 
-    form = forms.SignInForm()
+    form = SignInForm()
     if form.validate_on_submit():
         user = models.User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
@@ -86,7 +88,8 @@ def sign_out():
 @app.route('/account', methods=['GET', 'POST'])
 @flask_login.login_required
 def account():
-    form = forms.UpdateAccountForm()
+    from voic.forms import UpdateAccountForm
+    form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
             picture = save_picture(form.picture.data)
@@ -120,8 +123,9 @@ def account():
 @app.route('/new-document', methods=['GET', 'POST'])
 @flask_login.login_required
 def new_document():
+    from voic.forms import DocumentForm
     document = models.Document()
-    form = forms.DocumentForm()
+    form = DocumentForm()
     if form.validate_on_submit():
         document.title = form.title.data
         document.content = markupsafe.Markup(form.content.data)
@@ -132,7 +136,7 @@ def new_document():
         for role_id in form.roles.data:
             role = models.Role.query.get(role_id)
             document.role.append(role)
-    
+
         document.user = []
         for user_id in form.users.data:
             user = models.User.query.get(user_id)
@@ -148,13 +152,14 @@ def new_document():
 @app.route('/edit-document/<int:document_id>', methods=['GET', 'POST'])
 @flask_login.login_required
 def edit_document(document_id):
+    from voic.forms import DocumentForm
     document = models.Document.query.get(document_id)
     if flask_login.current_user not in document.user:
         if not set(flask_login.current_user.roles).intersection(document.role):
             flask.flash('You do not have the permissions to edit this document.', 'danger')
             return flask.redirect(flask.url_for('home'))
 
-    form = forms.DocumentForm()
+    form = DocumentForm()
     if form.validate_on_submit():
         document.title = form.title.data
         document.content = markupsafe.Markup(form.content.data)
@@ -164,12 +169,12 @@ def edit_document(document_id):
         for role_id in form.roles.data:
             role = models.Role.query.get(role_id)
             document.role.append(role)
-    
+
         document.user = []
         for user_id in form.users.data:
             user = models.User.query.get(user_id)
             document.user.append(user)
-    
+
         db.session.commit()
         flask.flash('Your document was edited!', 'success')
         return flask.redirect(flask.url_for('home'))
@@ -177,7 +182,7 @@ def edit_document(document_id):
         selected_role_ids = []
         for role in document.role:
             selected_role_ids.append(role.id)
-        
+
         selected_user_ids = []
         for user in document.user:
             selected_user_ids.append(user.id)
@@ -217,6 +222,9 @@ def duplicate_document(document_id):
 def delete_all_documents():
     for document in flask_login.current_user.documents:
         db.session.delete(models.Document.query.get(document.id))
+    for role in flask_login.current_user.roles:
+        for document in role.documents:
+            db.session.delete(models.Document.query.get(document.id))
     db.session.commit()
     flask.flash('All documents were deleted!', 'success')
     return flask.redirect(flask.url_for('home'))
