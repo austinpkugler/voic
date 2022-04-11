@@ -1,5 +1,6 @@
 import flask
 import flask_login
+import markupsafe
 from PIL import Image
 
 from datetime import datetime, timezone
@@ -138,7 +139,7 @@ def edit_document(document_id):
     form = forms.DocumentForm()
     if form.validate_on_submit():
         document.title = form.title.data
-        document.content = form.content.data
+        document.content = markupsafe.Markup(form.content.data)
         document.updated_at = datetime.now(timezone.utc)
         db.session.commit()
         flask.flash('Your document was edited!', 'success')
