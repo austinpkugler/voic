@@ -57,7 +57,7 @@ class Role(db.Model):
 
     def __eq__(self, other):
         return self.id == other.id
-    
+
     def __hash__(self):
         return hash(('id', self.id))
 
@@ -72,10 +72,9 @@ class Document(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-
     def __repr__(self):
         return f'Document(id={self.id}, title={self.title})'
-    
+
     def __eq__(self, other):
         return self.id == other.id
     
