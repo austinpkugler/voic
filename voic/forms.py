@@ -53,11 +53,11 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 
-    all_role_titles = []
+    _all_role_titles = []
     for role in models.Role.query.all():
-        all_role_titles.append((role.id, role.title))
+        _all_role_titles.append((role.id, role.title))
 
-    roles = SelectMultipleField('Select All Roles', choices=all_role_titles, coerce=int)
+    roles = SelectMultipleField('Select All Roles', choices=_all_role_titles, coerce=int)
     submit = SubmitField('Update')
 
     def validate_username(self, username):
@@ -77,17 +77,17 @@ class DocumentForm(flask_wtf.FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = CKEditorField('Content')
     submit = SubmitField('Save')
-    
+
     _all_role_titles = []
     for role in models.Role.query.all():
         _all_role_titles.append((role.id, role.title))
 
-    _roleFieldText = 'Select Roles that can Read, Edit, and Delete this Document'
-    roles = SelectMultipleField(_roleFieldText, choices=_all_role_titles, coerce=int)
+    _role_field_text = 'Select Roles that can Read, Edit, and Delete this Document'
+    roles = SelectMultipleField(_role_field_text, choices=_all_role_titles, coerce=int)
 
     _all_user_names = []
     for user in models.User.query.all():
         _all_user_names.append((user.id, user.username))
 
-    _userFieldTxt = 'Select Users that can Read, Edit, and Delete this Document'
-    users = SelectMultipleField(_userFieldTxt, choices=_all_user_names, coerce=int)
+    _user_field_text = 'Select Users that can Read, Edit, and Delete this Document'
+    users = SelectMultipleField(_user_field_text, choices=_all_user_names, coerce=int)
