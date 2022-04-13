@@ -34,7 +34,7 @@
           {% if document.content|length > 1000 %}
           <p class="article-content">{{ document.content[:1000] | safe }}...</p>
           {% else %}
-          <p class="article-content">{{ document.content | safe }}</p>
+          <p class="article-content limit-img-size">{{ document.content | safe }}</p>
           {% endif %}
         </div>
       </article>
