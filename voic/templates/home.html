@@ -17,15 +17,23 @@
       <article class="media content-section">
         <div class="media-body">
           <div class="article-metadata">
-            Users:
-            {% for user in document.user %}
-              {{ user.username }}
-            {% endfor %}
-            Roles:
-            {% for role in document.role %}
-              {{ role.title }}
-            {% endfor %}
-            <small class="text-muted float-right">Updated at {{ document.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+            <small class="text-muted">
+              <b>Updated:</b> {{ document.updated_at.strftime('%Y-%m-%d %H:%M') }}
+
+              <b>Users:</b>
+              {% for user in document.user %}
+                {{ user.username }}
+              {% endfor %}
+
+              {% if document.user|length + document.role|length > 15 %}
+                <br>
+              {% endif %}
+
+              <b>Roles:</b>
+              {% for role in document.role %}
+                {{ role.title }}
+              {% endfor %}
+            </small>
           </div>
           <a class="btn btn-outline-danger btn-sm float-right" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
           <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('duplicate_document', document_id=document.id) }}">Copy</a>
