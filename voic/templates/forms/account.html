@@ -50,7 +50,7 @@
           {% endif %}
         </div>
         <div class="form-group">
-            {{ form.roles.label(class="form-control-label") }}
+            {{ form.roles.label(class="form-control-label") }}*
             {% if form.roles.errors %}
               {{ form.email(class="form-control form-control-lg is-invalid") }}
               <div class="invalid-feedback">
@@ -68,5 +68,10 @@
         <a class="btn btn-outline-danger mr-2" href="{{ url_for('home') }}">Cancel</a>
       </div>
     </form>
+    <div class="border-top pt-1">
+      <small class="text-muted">
+        *Why is Employee selected? All users are automatically assigned this role.
+      </small>
+    </div>
   </div>
 {% endblock %}

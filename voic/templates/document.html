@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      Users:
+      {% for user in document.user %}
+        {{ user.username }}
+      {% endfor %}
+      Roles:
+      {% for role in document.role %}
+        {{ role.title }}
+      {% endfor %}
+      <small class="text-muted float-right">Updated at {{ document.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+    </div>
+    <a class="btn btn-outline-danger btn-sm float-right" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
+    <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('duplicate_document', document_id=document.id) }}">Copy</a>
+    <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('edit_document', document_id=document.id) }}">Edit</a>
+    <h3>{{ document.title }}</h3>
+    <p class="article-content limit-img-size">{{ document.content | safe }}</p>
+    <div class="form-group">
+      <a class="btn btn-outline-info mr-2" href="{{ url_for('home') }}">Back</a>
+    </div>
+  </div>
+</article>
+{% endblock content %}
