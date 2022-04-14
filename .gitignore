@@ -130,7 +130,3 @@ dmypy.json
 
 # Flask
 *.db
-*.jpg
-*.jpeg
-*.png
-*.PNG

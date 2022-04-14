@@ -8,9 +8,20 @@ h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
 
-img {
+/* img {
+  display: block;
   max-width: 100%;
-  max-height: 250px;
+  height: auto;
+} */
+
+/* .mockup-images img {
+  width: auto;
+  height: 200px;
+} */
+
+.document-images img {
+  max-width: 100%;
+  max-height: 500px;
 }
 
 .bg-steel {
