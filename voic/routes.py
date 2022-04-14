@@ -239,8 +239,8 @@ def new_document():
         return flask.redirect(flask.url_for('home'))
 
     # Render the empty document form for the new document
-    logger.debug(f'Rendering forms/document.html with DocumentForm() for {flask_login.current_user}')
-    return flask.render_template('forms/document.html', title='New Document', form=form)
+    logger.debug(f'Rendering forms/edit-document.html with DocumentForm() for {flask_login.current_user}')
+    return flask.render_template('forms/edit-document.html', title='New Document', form=form)
 
 
 @app.route('/edit-document/<int:document_id>', methods=['GET', 'POST'])
@@ -313,8 +313,8 @@ def edit_document(document_id):
         form.content.data = document.content
 
     # Render the document form with its current attributes for editing
-    logger.debug(f'Rendering forms/document.html with DocumentForm() for {flask_login.current_user}')
-    return flask.render_template('forms/document.html', title='Edit Document', form=form)
+    logger.debug(f'Rendering forms/edit-document.html with DocumentForm() for {flask_login.current_user}')
+    return flask.render_template('forms/edit-document.html', title='Edit Document', form=form)
 
 
 @app.route('/delete-document/<int:document_id>')
