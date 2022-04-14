@@ -322,6 +322,14 @@ def edit_document(document_id):
 def delete_document(document_id):
     logger.debug(f'Routed to /delete-document/{document_id}')
 
+    # Get the document from id and check whether the user has permission
+    document = models.Document.query.get(document_id)
+    if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
+        flask.flash('You do not have the permissions to delete this document.', 'danger')
+        logger.debug(f'{flask_login.current_user} does not have permission to delete {document}!')
+        logger.debug(f'Redirecting to home for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('home'))
+
     # Get and delete the document from the database
     document = models.Document.query.get(document_id)
     db.session.delete(document)
@@ -338,6 +346,14 @@ def delete_document(document_id):
 @flask_login.login_required
 def duplicate_document(document_id):
     logger.debug(f'Routed to /duplicate-document/{document_id}')
+
+    # Get the document from id and check whether the user has permission
+    document = models.Document.query.get(document_id)
+    if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
+        flask.flash('You do not have the permissions to copy this document.', 'danger')
+        logger.debug(f'{flask_login.current_user} does not have permission to copy {document}!')
+        logger.debug(f'Redirecting to home for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('home'))
 
     # Get and duplicate the document by creating a new document with the same content
     old = models.Document.query.get(document_id)
@@ -382,6 +398,14 @@ def delete_all_documents():
 @flask_login.login_required
 def view_document(document_id):
     logger.debug(f'Routed to /document/{document_id}')
+
+    # Get the document from id and check whether the user has permission
+    document = models.Document.query.get(document_id)
+    if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
+        flask.flash('You do not have the permissions to view this document.', 'danger')
+        logger.debug(f'{flask_login.current_user} does not have permission to view {document}!')
+        logger.debug(f'Redirecting to home for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('home'))
 
     document = models.Document.query.get(document_id)
     logger.debug(f'Rendering document.html with document for {flask_login.current_user}')
