@@ -22,7 +22,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
       <div class="container">
         <a class="navbar-brand mr-4" href="/">
-          <img src="static/img/globe.png" alt="logo" height="36" class="mr-2">
+          <img src="{{ url_for('static', filename='img/globe.png') }}" alt="logo" height="36" class="mr-2">
           <b>V</b>irtual <b>O</b>ffice in the <b>C</b>loud
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@
   </header>
   <main role="main" class="container">
     <div class="row">
-      <div class="col-md-10 offset-md-1">
+      <div class="col-md-12 document-images">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}

@@ -58,7 +58,7 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
     for role in models.Role.query.all():
         _all_role_titles.append((role.id, role.title))
 
-    roles = SelectMultipleField('Select your roles.', choices=_all_role_titles, coerce=int)
+    roles = SelectMultipleField('Select your roles.*', choices=_all_role_titles, coerce=int)
     submit = SubmitField('Update')
 
     def validate_username(self, username):
@@ -83,12 +83,12 @@ class DocumentForm(flask_wtf.FlaskForm):
     for role in models.Role.query.all():
         _all_role_titles.append((role.id, role.title))
 
-    _role_field_text = 'Select roles that can read, edit, and delete this document.'
+    _role_field_text = 'Select roles that can read, edit, and delete this document.*'
     roles = SelectMultipleField(_role_field_text, choices=_all_role_titles, coerce=int)
 
     _all_user_names = []
     for user in models.User.query.all():
         _all_user_names.append((user.id, user.username))
 
-    _user_field_text = 'Select users that can read, edit, and delete this document.'
+    _user_field_text = 'Select users that can read, edit, and delete this document.**'
     users = SelectMultipleField(_user_field_text, choices=_all_user_names, coerce=int)

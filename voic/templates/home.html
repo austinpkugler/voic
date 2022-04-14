@@ -49,10 +49,14 @@
       </article>
     {% endfor %}
   {% else %}
-    <h1>VOiC - Virtual Office In The Cloud</h1>
-    <h4>A Project by Hayden Carroll and Austin Kugler</h4>
+    <h1>Welcome to VOiC</h1>
     <p>
-      While almost all of the documents we write, read, share, act on, process or archive are digital, their management remains archaic. In VOiC, we make provisions to support decision workflows, virtual office and provenance and privacy based on role-based authorization. The system is based upon a recently proposed model for document management in virtual offices.
+      While almost all of the documents we write, read, share, act on, process or archive are digital, their management remains archaic. This is particularly true in the case of most office and government systems. In business and government, documents chronicle and immortalize the evolution of thoughts, deliberations, laws and decisions for the for the past as historical records, the present and the future. While the traditional paper-based hard copies serve as reliable preservation medium, they are vulnerable to theft, destruction and loss. 
     </p>
+    <p>
+      <img src="{{ url_for('static', filename='img/devices.png') }}" alt="desktop" class="float-left mr-2">
+      On the other hand, digital documents are prone to cybercrimes of various kinds, but less prone to destruction due to aging, fading or loss. With proper safeguards in place, they are largely indestructible. Yet, a robust office document management system is mostly absent. In this project, you will develop a new web-based document processing and management system called <u><i>V</i></u>irtual <u><i>O</i></u>ffice in the <u><i>C</i></u>loud}, or <i>VOiC</i> (pronounced voice), to create, share, query and update office documents. In VOiC, you will make provisions to support decision workflows, virtual office and provenance and privacy based on role-based authorization. The system will be based upon a recently proposed model for document management in virtual offices.
+    </p>
+    <a class="btn btn-outline-info mb-5 btn-lg d-flex justify-content-center" href="{{ url_for('sign_up') }}">Try It Now</a>
   {% endif %}
 {% endblock %}

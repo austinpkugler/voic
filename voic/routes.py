@@ -15,7 +15,7 @@ def save_picture(picture_data):
     random_hex = secrets.token_hex(8)
     _, filetype = os.path.splitext(picture_data.filename)
     picture = random_hex + filetype
-    path = os.path.join(app.root_path, 'static', 'img', picture)
+    path = os.path.join(app.root_path, 'static', 'img', 'profile', picture)
     output_size = (125, 125)
     image = Image.open(picture_data)
     image.thumbnail(output_size)
@@ -186,7 +186,7 @@ def account():
         form.email.data = flask_login.current_user.email
 
     # Render the account page with the user's profile picture
-    picture = flask.url_for('static', filename=os.path.join('img', flask_login.current_user.picture))
+    picture = flask.url_for('static', filename=os.path.join('img', 'profile', flask_login.current_user.picture))
     logger.debug(f'Rendering forms/account.html with picture and form for {flask_login.current_user}')
     return flask.render_template('forms/account.html', title='Account', picture=picture, form=form)
 
