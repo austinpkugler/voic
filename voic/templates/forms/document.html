@@ -32,7 +32,7 @@
         {% endif %}
       </div>
       <div class="form-group">
-        {{ form.roles.label(class="form-control-label") }}
+        {{ form.roles.label(class="form-control-label") }}*
         {% if form.roles.errors %}
           {{ form.email(class="form-control form-control-lg is-invalid") }}
           <div class="invalid-feedback">
@@ -45,7 +45,7 @@
         {% endif %}
         </div>
       <div class="form-group">
-        {{ form.users.label(class="form-control-label") }}
+        {{ form.users.label(class="form-control-label") }}**
         {% if form.users.errors %}
           {{ form.users(class="form-control form-control-lg is-invalid") }}
           <div class="invalid-feedback">
@@ -63,6 +63,13 @@
       <a class="btn btn-outline-danger mr-2" href="{{ url_for('home') }}">Cancel</a>
     </div>
   </form>
+  <div class="border-top pt-1">
+    <small class="text-muted">
+      *Sharing a document to everyone? Select the Employee role.
+      <br>
+      **Don't see your name? It may take a few minutes for new users to appear.
+    </small>
+  </div>
 </div>
 {{ ckeditor.load() }}
 {{ ckeditor.config(name='content')}}
