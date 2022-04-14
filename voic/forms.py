@@ -17,6 +17,7 @@ from wtforms.validators import (
     Email,
     EqualTo,
     Length,
+    Regexp,
     ValidationError
 )
 
@@ -24,7 +25,7 @@ from voic import models
 
 
 class SignUpForm(flask_wtf.FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20), Regexp(r'^[\w.@+-]+$')])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password')])
@@ -49,7 +50,7 @@ class SignInForm(flask_wtf.FlaskForm):
 
 
 class UpdateAccountForm(flask_wtf.FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20), Regexp(r'^[\w.@+-]+$')])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 
