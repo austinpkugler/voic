@@ -376,3 +376,13 @@ def delete_all_documents():
     # Redirect to the home page
     logger.debug(f'Redirecting to home for {flask_login.current_user}')
     return flask.redirect(flask.url_for('home'))
+
+
+@app.route('/document/<int:document_id>')
+@flask_login.login_required
+def view_document(document_id):
+    logger.debug(f'Routed to /document/{document_id}')
+
+    document = models.Document.query.get(document_id)
+    logger.debug(f'Rendering document.html with document for {flask_login.current_user}')
+    return flask.render_template('document.html', title='View Document', document=document)
