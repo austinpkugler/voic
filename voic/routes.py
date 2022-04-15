@@ -2,6 +2,7 @@ import flask
 import flask_login
 import flask_mail
 import markupsafe
+from bs4 import BeautifulSoup
 from PIL import Image
 
 from datetime import datetime, timezone
@@ -279,8 +280,7 @@ def edit_document(document_id):
     if form.validate_on_submit():
         # Set initial document attributes to match updated values in form
         document.title = form.title.data
-        document.content = markupsafe.Markup(form.content.data)
-        document.updated_at = datetime.now(timezone.utc)
+        document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
 
         # Reset users and roles who have access
         document.user = []
