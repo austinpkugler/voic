@@ -37,9 +37,8 @@ Ignore this email if you did not request a password reset.
 
 
 @app.route('/')
-@app.route('/home')
 def home():
-    logger.debug(f'Routed to /home')
+    logger.debug(f'Routed to /')
 
     if flask_login.current_user.is_authenticated:
         logger.debug(f'{flask_login.current_user} is authenticated')
