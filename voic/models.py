@@ -1,9 +1,10 @@
 import flask_login
+from itsdangerous import URLSafeTimedSerializer as TimedSerializer
 
 from dataclasses import dataclass
 from datetime import datetime
 
-from voic import db, login_manager
+from voic import app, db, login_manager
 
 
 users_documents = db.Table(
@@ -42,6 +43,19 @@ class User(db.Model, flask_login.UserMixin):
 
     def __repr__(self):
         return f'User(id={self.id}, username={self.username})'
+
+    def get_reset_token(self):
+        serializer = TimedSerializer(app.config['SECRET_KEY'])
+        return serializer.dumps({'user_id': self.id})
+
+    @staticmethod
+    def verify_reset_token(token, expires_in=900):
+        serializer = TimedSerializer(app.config['SECRET_KEY'])
+        try:
+            user_id = serializer.loads(token, expires_in)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
 
 @dataclass

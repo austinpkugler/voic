@@ -1,4 +1,5 @@
 bcrypt==3.2.0
+blinker==1.4
 cffi==1.15.0
 click==8.1.2
 dnspython==2.2.1
@@ -7,6 +8,7 @@ Flask==2.1.1
 Flask-Bcrypt==1.0.1
 Flask-CKEditor==0.4.6
 Flask-Login==0.6.0
+Flask-Mail==0.9.1
 Flask-Mobility==1.1.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.1
