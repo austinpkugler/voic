@@ -92,3 +92,19 @@ class DocumentForm(flask_wtf.FlaskForm):
 
     _user_field_text = 'Select users that can read, edit, and delete this document.**'
     users = SelectMultipleField(_user_field_text, choices=_all_user_names, coerce=int)
+
+
+class RequestPasswordResetForm(flask_wtf.FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        user = models.User.query.filter_by(email=email.data).first()
+        if not user:
+            raise ValidationError('No account could be found for that email address.')
+
+
+class ResetPasswordForm(flask_wtf.FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')

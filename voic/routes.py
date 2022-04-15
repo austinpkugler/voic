@@ -1,5 +1,6 @@
 import flask
 import flask_login
+import flask_mail
 import markupsafe
 from PIL import Image
 
@@ -7,7 +8,7 @@ from datetime import datetime, timezone
 import os
 import secrets
 
-from voic import logger, app, db, bcrypt, models
+from voic import logger, app, db, bcrypt, mail, models, forms
 
 
 def save_picture(picture_data):
@@ -21,6 +22,18 @@ def save_picture(picture_data):
     image.thumbnail(output_size)
     image.save(path)
     return picture
+
+
+def send_reset_password_email(user):
+    logger.debug(f'Sending reset password email to {user.email} for {user}')
+    token = user.get_reset_token()
+    msg = flask_mail.Message('Password Reset Request', sender=os.environ.get('EMAIL_USERNAME'), recipients=[user.email])
+    msg.body = f'''Please reset your password by visting the following link:
+{flask.url_for('reset_password', token=token, _external=True)}
+
+Ignore this email if you did not request a password reset.
+'''
+    mail.send(msg)
 
 
 @app.route('/')
@@ -77,7 +90,7 @@ def sign_up():
         db.session.add(user)
         db.session.commit()
         logger.debug(f'Committed {user} add to database')
-        flask.flash(f'Your account was created! You may now sign in.', 'success')
+        flask.flash(f'Your account was created. You may now sign in.', 'success')
 
         # Redirect to the sign in page
         logger.debug(f'Redirecting to sign_in for {flask_login.current_user}')
@@ -112,7 +125,7 @@ def sign_in():
             logger.debug(f'Redirecting to next page or home for {flask_login.current_user}')
             return flask.redirect(next_page) if next_page else flask.redirect(flask.url_for('home'))
         else:
-            flask.flash(f'Incorrect email or password.', 'danger')
+            flask.flash(f'Incorrect email or password!', 'danger')
 
     # Render sign in form
     logger.debug(f'Rendering forms/sign-in.html with SignInForm()')
@@ -126,7 +139,7 @@ def sign_out():
 
     # Sign out the user
     flask_login.logout_user()
-    flask.flash('You have been signed out!', 'success')
+    flask.flash('You have been signed out.', 'success')
 
     # Redirect to the home page
     logger.debug(f'Redirecting to home for {flask_login.current_user}')
@@ -162,7 +175,7 @@ def account():
         # Commit the changes to the database
         db.session.commit()
         logger.debug(f'Committed {flask_login.current_user} update to database')
-        flask.flash('Your account has been updated!', 'success')
+        flask.flash('Your account has been updated.', 'success')
 
         # Redirect to the account page to show the updated information
         logger.debug(f'Redirecting to account for {flask_login.current_user}')
@@ -232,7 +245,7 @@ def new_document():
         db.session.commit()
         logger.debug(f'Committed {document} add to database')
 
-        flask.flash('Your document was created!', 'success')
+        flask.flash('Your document was created.', 'success')
 
         # Redirect to the home page
         logger.debug(f'Redirecting to home for {flask_login.current_user}')
@@ -251,10 +264,10 @@ def edit_document(document_id):
     # Get the document from id and check whether the user has permission
     document = models.Document.query.get(document_id)
     if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
-            flask.flash('You do not have the permissions to edit this document.', 'danger')
-            logger.debug(f'{flask_login.current_user} does not have permission to edit {document}!')
-            logger.debug(f'Redirecting to home for {flask_login.current_user}')
-            return flask.redirect(flask.url_for('home'))
+        flask.flash('You do not have the permissions to edit this document!', 'danger')
+        logger.debug(f'{flask_login.current_user} does not have permission to edit {document}!')
+        logger.debug(f'Redirecting to home for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('home'))
 
     # Generate a form for editing an existing document
     from voic.forms import DocumentForm
@@ -285,7 +298,7 @@ def edit_document(document_id):
 
         db.session.commit()
         logger.debug(f'Committed {document} update to database')
-        flask.flash('Your document was edited!', 'success')
+        flask.flash('Your document was edited.', 'success')
         logger.debug(f'Redirecting to home for {flask_login.current_user}')
         return flask.redirect(flask.url_for('home'))
 
@@ -325,7 +338,7 @@ def delete_document(document_id):
     # Get the document from id and check whether the user has permission
     document = models.Document.query.get(document_id)
     if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
-        flask.flash('You do not have the permissions to delete this document.', 'danger')
+        flask.flash('You do not have the permissions to delete this document!', 'danger')
         logger.debug(f'{flask_login.current_user} does not have permission to delete {document}!')
         logger.debug(f'Redirecting to home for {flask_login.current_user}')
         return flask.redirect(flask.url_for('home'))
@@ -335,7 +348,7 @@ def delete_document(document_id):
     db.session.delete(document)
     db.session.commit()
     logger.debug(f'Committed {document} delete to database')
-    flask.flash('Document was deleted!', 'success')
+    flask.flash('Document was deleted.', 'success')
 
     # Redirect to the home page
     logger.debug(f'Redirecting to home for {flask_login.current_user}')
@@ -350,7 +363,7 @@ def duplicate_document(document_id):
     # Get the document from id and check whether the user has permission
     document = models.Document.query.get(document_id)
     if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
-        flask.flash('You do not have the permissions to copy this document.', 'danger')
+        flask.flash('You do not have the permissions to copy this document!', 'danger')
         logger.debug(f'{flask_login.current_user} does not have permission to copy {document}!')
         logger.debug(f'Redirecting to home for {flask_login.current_user}')
         return flask.redirect(flask.url_for('home'))
@@ -363,7 +376,7 @@ def duplicate_document(document_id):
     db.session.add(new)
     db.session.commit()
     logger.debug(f'Committed {new} add to database')
-    flask.flash('Document was duplicated!', 'success')
+    flask.flash('Document was duplicated.', 'success')
 
     # Redirect to the home page
     logger.debug(f'Redirecting to home for {flask_login.current_user}')
@@ -387,7 +400,7 @@ def delete_all_documents():
     # Commit the changes to the database
     db.session.commit()
     logger.debug(f'Committed Document() mass delete to database')
-    flask.flash('All documents were deleted!', 'success')
+    flask.flash('All documents were deleted.', 'success')
 
     # Redirect to the home page
     logger.debug(f'Redirecting to home for {flask_login.current_user}')
@@ -402,7 +415,7 @@ def view_document(document_id):
     # Get the document from id and check whether the user has permission
     document = models.Document.query.get(document_id)
     if flask_login.current_user not in document.user and not set(flask_login.current_user.roles).intersection(document.role):
-        flask.flash('You do not have the permissions to view this document.', 'danger')
+        flask.flash('You do not have the permissions to view this document!', 'danger')
         logger.debug(f'{flask_login.current_user} does not have permission to view {document}!')
         logger.debug(f'Redirecting to home for {flask_login.current_user}')
         return flask.redirect(flask.url_for('home'))
@@ -410,3 +423,65 @@ def view_document(document_id):
     document = models.Document.query.get(document_id)
     logger.debug(f'Rendering document.html with document for {flask_login.current_user}')
     return flask.render_template('document.html', title='View Document', document=document)
+
+
+@app.route('/request-password-reset', methods=['GET', 'POST'])
+def request_password_reset():
+    logger.debug(f'Routed to /request-password-reset')
+
+    # If the user is signed in, redirect to home
+    if flask_login.current_user.is_authenticated:
+        logger.debug(f'{flask_login.current_user} is authenticated')
+        logger.debug(f'Redirecting to home for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('home'))
+
+    # Generate a form for requesting a password reset
+    form = forms.RequestPasswordResetForm()
+
+    # If the form is submitted
+    if form.validate_on_submit():
+        user = models.User.query.filter_by(email=form.email.data).first()
+        send_reset_password_email(user)
+        flask.flash(f'A reset password link has been sent to your email. Make sure to check your spam.', 'success')
+        return flask.redirect(flask.url_for('sign_in'))
+
+    logger.debug(f'Rendering forms/request-password-reset.html with RequestPasswordResetForm()')
+    return flask.render_template('forms/request-password-reset.html', title='Request Password Reset', form=form)
+
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    logger.debug(f'Routed to /reset-password')
+
+    # If the user is signed in, redirect to home
+    if flask_login.current_user.is_authenticated:
+        logger.debug(f'{flask_login.current_user} is authenticated')
+        logger.debug(f'Redirecting to home for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('home'))
+
+    # If the token is invalid
+    user = models.User.verify_reset_token(token)
+    if not user:
+        flask.flash('Invalid or expired token!', 'danger')
+        logger.debug(f'Token {token} is invalid')
+        return flask.redirect(flask.url_for('request-reset-password'))
+
+    # Generate a form for reseting password
+    form = forms.ResetPasswordForm()
+
+    # If the form is submitted
+    if form.validate_on_submit():
+        # Create a new account
+        logger.debug(f'{flask_login.current_user} is authenticated')
+        password_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.roles = [models.Role.query.filter_by(title='Employee').first()]
+        user.password = password_hash
+        db.session.commit()
+        logger.debug(f'Committed {user} update to database')
+        flask.flash(f'Your password was updated. You may now sign in.', 'success')
+
+        # Redirect to the sign in page
+        logger.debug(f'Redirecting to sign_in for {flask_login.current_user}')
+        return flask.redirect(flask.url_for('sign_in'))
+
+    return flask.render_template('forms/reset-password.html', title='Reset Your Password', form=form)
