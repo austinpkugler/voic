@@ -1,4 +1,6 @@
 bcrypt==3.2.0
+beautifulsoup4==4.11.1
+bleach==5.0.0
 blinker==1.4
 cffi==1.15.0
 click==8.1.2
@@ -22,7 +24,9 @@ Pillow==9.1.0
 pycparser==2.21
 python-dotenv==0.20.0
 six==1.16.0
+soupsieve==2.3.2.post1
 SQLAlchemy==1.4.35
+webencodings==0.5.1
 Werkzeug==2.1.1
 WTForms==3.0.1
 zipp==3.8.0
