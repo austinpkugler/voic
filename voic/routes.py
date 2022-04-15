@@ -44,18 +44,21 @@ def home():
         logger.debug(f'{flask_login.current_user} is authenticated')
 
         # Get all documents the user has access to
-        documents = flask_login.current_user.documents
+        document_ids = []
+        for document in flask_login.current_user.documents:
+            document_ids.append(document.id)
+
         for role in flask_login.current_user.roles:
-            documents += role.documents
+            for document in role.documents:
+                document_ids.append(document.id)
 
-        # Remove duplicates using set()
-        documents = list(set(documents))
-
-        # Sort documents by last updated, newest to oldest
-        documents.sort(key=lambda d: d.updated_at, reverse=True)
+        # Paginate all the user's documents
+        page = flask.request.args.get('page', 1, type=int)
+        document_ids = tuple(set(document_ids))
+        documents = models.Document.query.filter(models.Document.id.in_(document_ids)).paginate(page=page, per_page=5)
 
         # Render the documents on the home page
-        logger.debug(f'Found {len(documents)} document(s) for {flask_login.current_user}')
+        logger.debug(f'Found {len(document_ids)} document(s) for {flask_login.current_user}')
         logger.debug(f'Rendering home.html with documents for {flask_login.current_user}')
         return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
     else:
