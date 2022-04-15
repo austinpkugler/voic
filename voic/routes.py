@@ -55,7 +55,7 @@ def home():
         # Paginate all the user's documents
         page = flask.request.args.get('page', 1, type=int)
         document_ids = tuple(set(document_ids))
-        documents = models.Document.query.filter(models.Document.id.in_(document_ids)).paginate(page=page, per_page=5)
+        documents = models.Document.query.filter(models.Document.id.in_(document_ids)).order_by(models.Document.updated_at.desc()).paginate(page=page, per_page=5)
 
         # Render the documents on the home page
         logger.debug(f'Found {len(document_ids)} document(s) for {flask_login.current_user}')
