@@ -15,6 +15,8 @@ pip install -r requirements.txt
 Now, create a file called `.env` at the project's root directory. The file should be in the following format:
 ```
 FLASK_SECRET_KEY="yoursecretkey"
+EMAIL_USERNAME="email@email.com"
+EMAIL_PASSWOPRD="emailpassword"
 ```
 Generate the database:
 ```
