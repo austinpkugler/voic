@@ -222,7 +222,7 @@ def new_document():
     if form.validate_on_submit():
         # Set initial document attributes
         document.title = form.title.data
-        document.content = markupsafe.Markup(form.content.data)
+        document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
         document.updated_at = datetime.now(timezone.utc)
         document.creator_id = flask_login.current_user.id
         document.role = []
