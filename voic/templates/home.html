@@ -13,7 +13,7 @@
       <a class="btn btn-outline-info mr-2" href="{{ url_for('new_document') }}">Create</a>
       <a class="btn btn-outline-danger mr-2" href="{{ url_for('delete_all_documents') }}">Delete All</a>
     </div>
-    {% for document in documents %}
+    {% for document in documents.items %}
       <article class="media content-section">
         <div class="media-body">
           <div class="article-metadata">
@@ -54,6 +54,19 @@
         </div>
       </article>
     {% endfor %}
+    <div class="d-flex justify-content-center">
+      {% for page_num in documents.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+          {% if documents.page == page_num %}
+            <a class="btn btn-info mb-4 mr-2" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          {% else %}
+            <a class="btn btn-outline-info mb-4 mr-2" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          {% endif %}
+        {% else %}
+        <!-- <div class="mr-2">...</div> -->
+        {% endif %}
+      {% endfor %}
+    </div>
   {% else %}
     <h1>Welcome to VOiC</h1>
     <p>
