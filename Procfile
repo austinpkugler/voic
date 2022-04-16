@@ -1,1 +1,1 @@
-web: voic:app
+web gunicorn voic:app
