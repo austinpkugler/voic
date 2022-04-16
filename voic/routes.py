@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 import os
 import secrets
 
-from voic import logger, app, db, bcrypt, mail, models, forms
+from voic import logger, app, db, bcrypt, mail, models
 
 
 def save_picture(picture_data):
@@ -438,7 +438,8 @@ def request_password_reset():
         return flask.redirect(flask.url_for('home'))
 
     # Generate a form for requesting a password reset
-    form = forms.RequestPasswordResetForm()
+    from voic.forms import RequestPasswordResetForm
+    form = RequestPasswordResetForm()
 
     # If the form is submitted
     if form.validate_on_submit():
@@ -469,7 +470,8 @@ def reset_password(token):
         return flask.redirect(flask.url_for('request-reset-password'))
 
     # Generate a form for reseting password
-    form = forms.ResetPasswordForm()
+    from voic.forms import ResetPasswordForm
+    form = ResetPasswordForm()
 
     # If the form is submitted
     if form.validate_on_submit():
