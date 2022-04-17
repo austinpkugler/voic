@@ -2,6 +2,7 @@ import flask
 import flask_login
 import flask_mail
 import markupsafe
+import sqlalchemy
 from bs4 import BeautifulSoup
 from PIL import Image
 
@@ -37,7 +38,7 @@ Ignore this email if you did not request a password reset.
     mail.send(msg)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     logger.debug(f'Routed to /')
 
@@ -48,7 +49,7 @@ def home():
         document_ids = []
         for document in flask_login.current_user.documents:
             document_ids.append(document.id)
-
+        
         for role in flask_login.current_user.roles:
             for document in role.documents:
                 document_ids.append(document.id)
@@ -58,10 +59,25 @@ def home():
         document_ids = tuple(set(document_ids))
         documents = models.Document.query.filter(models.Document.id.in_(document_ids)).order_by(models.Document.updated_at.desc()).paginate(page=page, per_page=5)
 
+        # Create search form
+        from voic.forms import SearchForm
+        form = SearchForm()
+
+        if form.validate_on_submit():
+            # change documents if we searched
+            documents = (models.Document.query.filter(models.Document.id.in_(document_ids))
+                        .filter(sqlalchemy.or_(
+                                models.Document.content.contains(form.search_bar.data),
+                                models.Document.title.contains(form.search_bar.data)
+                                )
+                        )
+                        .order_by(models.Document.updated_at.desc()).paginate(page=page, per_page=5))
+
+
         # Render the documents on the home page
         logger.debug(f'Found {len(document_ids)} document(s) for {flask_login.current_user}')
         logger.debug(f'Rendering home.html with documents for {flask_login.current_user}')
-        return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents)
+        return flask.render_template('home.html', title='Virtual Office in the Cloud', documents=documents, form=form)
     else:
         # If the user is not signed in, render home with no documents
         logger.debug(f'Current User is not authenticated')
