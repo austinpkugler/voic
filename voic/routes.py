@@ -113,7 +113,7 @@ def sign_up():
         # Create a new account
         logger.debug(f'{current_user} is authenticated')
         pass_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = models.User(username=form.username.data, email=form.email.data, password=pass_hash)
+        user = models.User(username=form.username.data, email=form.email.data.lower(), password=pass_hash)
         user.roles = [models.Role.query.filter_by(title='Employee').first()]
         db.session.add(user)
         db.session.commit()
@@ -146,7 +146,7 @@ def sign_in():
     # If the form is submitted
     if form.validate_on_submit():
         # Sign in if the email and password are valid
-        user = models.User.query.filter_by(email=form.email.data).first()
+        user = models.User.query.filter_by(email=form.email.data.lower()).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             flask_login.login_user(user, remember=form.remember.data)
             next_page = flask.request.args.get('next')
@@ -192,7 +192,7 @@ def account():
 
         # Set the new username and email
         current_user.username = form.username.data
-        current_user.email = form.email.data
+        current_user.email = form.email.data.lower()
 
         # Set the new user roles, always include the Employee role
         current_user.roles = [models.Role.query.filter_by(title='Employee').first()]
@@ -224,7 +224,7 @@ def account():
 
         # Populate the username and email to reflect the current user
         form.username.data = current_user.username
-        form.email.data = current_user.email
+        form.email.data = current_user.email.lower()
 
     # Render the account page with the user's profile picture
     path = os.path.join('img', 'profile', current_user.picture)
@@ -469,7 +469,7 @@ def request_password_reset():
 
     # If the form is submitted
     if form.validate_on_submit():
-        user = models.User.query.filter_by(email=form.email.data).first()
+        user = models.User.query.filter_by(email=form.email.data.lower()).first()
         send_reset_password_email(user)
         flask.flash(f'A reset password link has been sent to your email. Make sure to check your spam.', 'success')
         return flask.redirect(flask.url_for('sign_in'))
