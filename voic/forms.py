@@ -23,6 +23,9 @@ from wtforms.validators import (
 
 from voic import models
 
+class SearchForm(flask_wtf.FlaskForm):
+    search_bar = StringField('')
+    submit = SubmitField('Submit')
 
 class SignUpForm(flask_wtf.FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20), Regexp(r'^[\w.@+-]+$')])
