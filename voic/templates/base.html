@@ -23,7 +23,11 @@
       <div class="container">
         <a class="navbar-brand mr-4" href="/">
           <img src="{{ url_for('static', filename='img/globe.png') }}" alt="logo" height="36" class="mr-2">
-          <b>V</b>irtual <b>O</b>ffice in the <b>C</b>loud
+          {% if request.MOBILE %}
+            VOiC
+          {% else %}
+            <b>V</b>irtual <b>O</b>ffice in the <b>C</b>loud
+          {% endif %}
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
