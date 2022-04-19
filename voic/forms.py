@@ -26,6 +26,7 @@ VALID_EMAIL = [DataRequired(), Email(), Length(min=5, max=320)]
 VALID_PASSWORD = [DataRequired(), Length(min=1, max=32)]
 VALID_TITLE = [DataRequired(), Length(min=1, max=320)]
 VALID_CONTENT = [Length(min=0, max=32000)]
+VALID_GRAPH = [Length(min=0, max=320)]
 
 
 class SearchForm(flask_wtf.FlaskForm):
@@ -86,6 +87,7 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
 class DocumentForm(flask_wtf.FlaskForm):
     title = StringField('Title', validators=VALID_TITLE)
     content = CKEditorField('Content', validators=VALID_CONTENT)
+    graph = StringField('Graph', validators=VALID_GRAPH)
     submit = SubmitField('Save')
 
     _all_role_titles = []

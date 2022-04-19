@@ -71,17 +71,38 @@ def home():
 
         # If the form is submitted, get all documents matching the search
         if form.validate_on_submit():
-            documents = (
-                models.Document.query.filter(
-                    models.Document.id.in_(document_ids)
+            if form.search_bar.data.startswith('graph:'):
+                edges = form.search_bar.data[6:].split(',')
+                for i, edge in enumerate(edges):
+                    sorted_edge = edge.split('-')
+                    if sorted_edge[0] > sorted_edge[1]:
+                        sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
+                    edges[i] = '-'.join(sorted_edge)
+
+                edges.sort()
+                graph_query = ','.join(edges)
+                form.search_bar.data = 'graph:' + graph_query
+
+                documents = (
+                    models.Document.query.filter(
+                        models.Document.id.in_(document_ids)
+                    )
+                    .filter(models.Document.graph.contains(graph_query))
+                    .order_by(models.Document.updated_at.desc())
+                    .paginate(page=page, per_page=5)
                 )
-                .filter(sqlalchemy.or_(
-                    models.Document.content.contains(form.search_bar.data),
-                    models.Document.title.contains(form.search_bar.data))
+            else:
+                documents = (
+                    models.Document.query.filter(
+                        models.Document.id.in_(document_ids)
+                    )
+                    .filter(sqlalchemy.or_(
+                        models.Document.content.contains(form.search_bar.data),
+                        models.Document.title.contains(form.search_bar.data))
+                    )
+                    .order_by(models.Document.updated_at.desc())
+                    .paginate(page=page, per_page=5)
                 )
-                .order_by(models.Document.updated_at.desc())
-                .paginate(page=page, per_page=5)
-            )
 
         # Render the documents on the home page
         logger.debug(f'Found {len(document_ids)} document(s) for {current_user}')
@@ -249,6 +270,15 @@ def new_document():
         # Set initial document attributes
         document.title = form.title.data
         document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
+        edges = form.graph.data.split(',')
+        for i, edge in enumerate(edges):
+            sorted_edge = edge.split('-')
+            if sorted_edge[0] > sorted_edge[1]:
+                sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
+            edges[i] = '-'.join(sorted_edge)
+
+        edges.sort()
+        document.graph = ','.join(edges)
         document.updated_at = datetime.now(timezone.utc)
         document.creator_id = current_user.id
         document.role = []
@@ -307,6 +337,15 @@ def edit_document(document_id):
         # Set initial document attributes to match updated values in form
         document.title = form.title.data
         document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
+        edges = form.graph.data.split(',')
+        for i, edge in enumerate(edges):
+            sorted_edge = edge.split('-')
+            if sorted_edge[0] > sorted_edge[1]:
+                sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
+            edges[i] = '-'.join(sorted_edge)
+
+        edges.sort()
+        document.graph = ','.join(edges)
 
         # Reset users and roles who have access
         document.user = []
@@ -352,6 +391,7 @@ def edit_document(document_id):
         # Populate the title and content for the document
         form.title.data = document.title
         form.content.data = document.content
+        form.graph.data = document.graph
 
     # Render the document form with its current attributes for editing
     logger.debug(f'Rendering forms/edit-document.html with DocumentForm() for {current_user}')
@@ -398,7 +438,7 @@ def duplicate_document(document_id):
 
     # Get and duplicate the document by creating a new document with the same content
     old = models.Document.query.get(document_id)
-    new = models.Document(title=old.title, content=old.content, creator_id=old.creator_id)
+    new = models.Document(title=old.title, content=old.content, creator_id=old.creator_id, graph=old.graph)
     new.role = old.role
     new.user = old.user
     db.session.add(new)

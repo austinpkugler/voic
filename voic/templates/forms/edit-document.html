@@ -31,6 +31,19 @@
           {% endif %}
         </div>
         <div class="form-group">
+          {{ form.graph.label(class="form-control-label") }}
+          {% if form.graph.errors %}
+            {{ form.graph(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.graph.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.graph(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
           {{ form.roles.label(class="form-control-label") }}
           {% if form.roles.errors %}
             {{ form.email(class="form-control form-control-lg is-invalid") }}

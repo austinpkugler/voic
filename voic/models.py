@@ -81,8 +81,9 @@ class Document(db.Model):
     __tablename__ = 'document'
     id = db.Column(db.Integer, primary_key=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(320), nullable=False)
     content = db.Column(db.Text)
+    graph = db.Column(db.String(320), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -91,6 +92,6 @@ class Document(db.Model):
 
     def __eq__(self, other):
         return self.id == other.id
-    
+
     def __hash__(self):
         return hash(('id', self.id))
