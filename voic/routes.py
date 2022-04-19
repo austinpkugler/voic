@@ -79,6 +79,7 @@ def home():
                         sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
                     edges[i] = '-'.join(sorted_edge)
 
+                edges = list(set(edges))
                 edges.sort()
                 graph_query = ','.join(edges)
                 form.search_bar.data = 'graph:' + graph_query
@@ -277,6 +278,7 @@ def new_document():
                 sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
             edges[i] = '-'.join(sorted_edge)
 
+        edges = list(set(edges))
         edges.sort()
         document.graph = ','.join(edges)
         document.updated_at = datetime.now(timezone.utc)
@@ -344,6 +346,7 @@ def edit_document(document_id):
                 sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
             edges[i] = '-'.join(sorted_edge)
 
+        edges = list(set(edges))
         edges.sort()
         document.graph = ','.join(edges)
 
