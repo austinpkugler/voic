@@ -9,8 +9,18 @@
       {{ form.hidden_tag() }}
       <fieldset class="form-group">
         <div class="input-group rounded">
-          {{ form.search_bar(class="form-control rounded mr-2") }}
-          {{ form.submit(class="btn btn-outline-info mr-2") }}
+          {% if form.search_bar.errors %}
+            {{ form.search_bar(class="form-control rounded mr-2 is-invalid") }}
+            {{ form.submit(class="btn btn-outline-info mr-2") }}
+            <div class="invalid-feedback">
+              {% for error in form.search_bar.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.search_bar(class="form-control rounded mr-2") }}
+            {{ form.submit(class="btn btn-outline-info mr-2") }}
+          {% endif %}
         </div>
       </fieldset>
     </form>

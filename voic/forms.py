@@ -26,11 +26,12 @@ VALID_EMAIL = [DataRequired(), Email(), Length(min=5, max=320)]
 VALID_PASSWORD = [DataRequired(), Length(min=1, max=32)]
 VALID_TITLE = [DataRequired(), Length(min=1, max=320)]
 VALID_CONTENT = [Length(min=0, max=32000)]
-VALID_GRAPH = [Length(min=0, max=320)]
+VALID_GRAPH = [Length(min=0, max=320), Regexp(r'^([A-Za-z0-9]+-[A-Za-z0-9]+,)*([A-Za-z0-9]+-[A-Za-z0-9]+)$')]
+VALID_SEARCH = [Length(min=0, max=320), Regexp(r'(^(?!graph:).*$)|(^graph:([A-Za-z0-9]+-[A-Za-z0-9]+,)*([A-Za-z0-9]+-[A-Za-z0-9]+)$)')]
 
 
 class SearchForm(flask_wtf.FlaskForm):
-    search_bar = StringField('Search Documents')
+    search_bar = StringField('Search Documents', validators=VALID_SEARCH)
     submit = SubmitField('Search')
 
 

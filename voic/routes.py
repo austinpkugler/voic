@@ -96,16 +96,7 @@ def home():
         # If the form is submitted, get all documents matching the search
         if form.validate_on_submit():
             if form.search_bar.data.startswith('graph:'):
-                edges = form.search_bar.data[6:].split(',')
-                for i, edge in enumerate(edges):
-                    sorted_edge = edge.split('-')
-                    if sorted_edge[0] > sorted_edge[1]:
-                        sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
-                    edges[i] = '-'.join(sorted_edge)
-
-                edges = list(set(edges))
-                edges.sort()
-                graph_query = ','.join(edges)
+                graph_query = clean_graph(form.search_bar.data[6:])
                 form.search_bar.data = 'graph:' + graph_query
 
                 documents = (
@@ -353,7 +344,7 @@ def edit_document(document_id):
     if form.validate_on_submit():
         # Set initial document attributes to match updated values in form
         document.title = form.title.data
-        document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
+        document.content = BeautifulSoup(markupsafe.Markup(form.content.data), features='html.parser').prettify()
         document.graph = clean_graph(form.graph.data)
 
         # Reset users and roles who have access
