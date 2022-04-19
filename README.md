@@ -14,9 +14,10 @@ pip install -r requirements.txt
 ```
 Now, create a file called `.env` at the project's root directory. The file should be in the following format:
 ```
-FLASK_SECRET_KEY="yoursecretkey"
-EMAIL_USERNAME="email@email.com"
-EMAIL_PASSWOPRD="emailpassword"
+FLASK_SECRET_KEY="your secret key."
+EMAIL_USERNAME="your@email.com"
+EMAIL_PASSWOPRD="youremailpassword"
+DATABASE_URL='sqlite:///voic.db'
 ```
 Generate the database:
 ```
