@@ -16,6 +16,7 @@ from voic import logger, app, db, bcrypt, mail, models
 
 def save_picture(picture_data):
     logger.debug(f'Saving picture for {current_user}')
+
     random_hex = secrets.token_hex(8)
     _, filetype = os.path.splitext(picture_data.filename)
     picture = random_hex + filetype
@@ -24,11 +25,14 @@ def save_picture(picture_data):
     image = Image.open(picture_data)
     image.thumbnail(output_size)
     image.save(path)
+
+    logger.debug(f'Saved picture to {path} for {current_user}')
     return picture
 
 
 def send_reset_password_email(user):
     logger.debug(f'Sending reset password email to {user.email} for {user}')
+
     token = user.get_reset_token()
     email_sender = os.environ.get('EMAIL_USERNAME')
     msg = flask_mail.Message('Password Reset Request', sender=email_sender, recipients=[user.email])
@@ -38,6 +42,26 @@ def send_reset_password_email(user):
 Ignore this email if you did not request a password reset.
 '''
     mail.send(msg)
+
+    logger.debug(f'Sent email to {user.email} for {user}')
+
+
+def clean_graph(graph_str):
+    logger.debug(f'Cleaning submitted graph {graph_str} for {current_user}')
+
+    edges = graph_str.split(',')
+    for i, edge in enumerate(edges):
+        sorted_edge = edge.split('-')
+        if sorted_edge[0] > sorted_edge[1]:
+            sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
+        edges[i] = '-'.join(sorted_edge)
+
+    edges = list(set(edges))
+    edges.sort()
+    graph = ','.join(edges)
+
+    logger.debug(f'Cleaned graph {graph_str} for {current_user}')
+    return graph
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -271,16 +295,7 @@ def new_document():
         # Set initial document attributes
         document.title = form.title.data
         document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
-        edges = form.graph.data.split(',')
-        for i, edge in enumerate(edges):
-            sorted_edge = edge.split('-')
-            if sorted_edge[0] > sorted_edge[1]:
-                sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
-            edges[i] = '-'.join(sorted_edge)
-
-        edges = list(set(edges))
-        edges.sort()
-        document.graph = ','.join(edges)
+        document.graph = clean_graph(form.graph.data)
         document.updated_at = datetime.now(timezone.utc)
         document.creator_id = current_user.id
         document.role = []
@@ -339,16 +354,7 @@ def edit_document(document_id):
         # Set initial document attributes to match updated values in form
         document.title = form.title.data
         document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
-        edges = form.graph.data.split(',')
-        for i, edge in enumerate(edges):
-            sorted_edge = edge.split('-')
-            if sorted_edge[0] > sorted_edge[1]:
-                sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
-            edges[i] = '-'.join(sorted_edge)
-
-        edges = list(set(edges))
-        edges.sort()
-        document.graph = ','.join(edges)
+        document.graph = clean_graph(form.graph.data)
 
         # Reset users and roles who have access
         document.user = []
