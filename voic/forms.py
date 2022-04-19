@@ -1,10 +1,7 @@
-import flask_login
 import flask_wtf
 from flask_ckeditor import CKEditorField
-from flask_wtf.file import (
-    FileField,
-    FileAllowed
-)
+from flask_login import current_user
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import (
     BooleanField,
     PasswordField,
@@ -23,14 +20,25 @@ from wtforms.validators import (
 
 from voic import models
 
+
+VALID_USERNAME = [DataRequired(), Length(min=1, max=32), Regexp(r'^[\w.@+-]+$')]
+VALID_EMAIL = [DataRequired(), Email(), Length(min=5, max=320)]
+VALID_PASSWORD = [DataRequired(), Length(min=1, max=32)]
+VALID_TITLE = [DataRequired(), Length(min=1, max=320)]
+VALID_CONTENT = [Length(min=0, max=32000)]
+VALID_GRAPH = [Length(min=0, max=320), Regexp(r'^([A-Za-z0-9]+-[A-Za-z0-9]+,)*([A-Za-z0-9]+-[A-Za-z0-9]+)$')]
+VALID_SEARCH = [Length(min=0, max=320), Regexp(r'(^(?!graph:).*$)|(^graph:([A-Za-z0-9]+-[A-Za-z0-9]+,)*([A-Za-z0-9]+-[A-Za-z0-9]+)$)')]
+
+
 class SearchForm(flask_wtf.FlaskForm):
-    search_bar = StringField('')
-    submit = SubmitField('Submit')
+    search_bar = StringField('Search Documents', validators=VALID_SEARCH)
+    submit = SubmitField('Search')
+
 
 class SignUpForm(flask_wtf.FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20), Regexp(r'^[\w.@+-]+$')])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField('Username', validators=VALID_USERNAME)
+    email = StringField('Email', validators=VALID_EMAIL)
+    password = PasswordField('Password', validators=VALID_PASSWORD)
     confirm_password = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
@@ -46,15 +54,15 @@ class SignUpForm(flask_wtf.FlaskForm):
 
 
 class SignInForm(flask_wtf.FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    email = StringField('Email', validators=VALID_EMAIL)
+    password = PasswordField('Password', validators=VALID_PASSWORD)
     remember = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
 
 class UpdateAccountForm(flask_wtf.FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20), Regexp(r'^[\w.@+-]+$')])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    username = StringField('Username', validators=VALID_USERNAME)
+    email = StringField('Email', validators=VALID_EMAIL)
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 
     _all_role_titles = []
@@ -65,21 +73,22 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
     submit = SubmitField('Update')
 
     def validate_username(self, username):
-        if username.data != flask_login.current_user.username:
+        if username.data != current_user.username:
             user = models.User.query.filter_by(username=username.data).first()
             if user:
                 raise ValidationError('Username already exists.')
 
     def validate_email(self, email):
-        if email.data != flask_login.current_user.email:
+        if email.data != current_user.email:
             user = models.User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Email already exists.')
 
 
 class DocumentForm(flask_wtf.FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = CKEditorField('Content')
+    title = StringField('Title', validators=VALID_TITLE)
+    content = CKEditorField('Content', validators=VALID_CONTENT)
+    graph = StringField('Graph', validators=VALID_GRAPH)
     submit = SubmitField('Save')
 
     _all_role_titles = []
@@ -98,7 +107,7 @@ class DocumentForm(flask_wtf.FlaskForm):
 
 
 class RequestPasswordResetForm(flask_wtf.FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=VALID_EMAIL)
     submit = SubmitField('Request Password Reset')
 
     def validate_email(self, email):
@@ -108,6 +117,6 @@ class RequestPasswordResetForm(flask_wtf.FlaskForm):
 
 
 class ResetPasswordForm(flask_wtf.FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=VALID_PASSWORD)
     confirm_password = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
