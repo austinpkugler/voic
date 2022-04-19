@@ -21,7 +21,11 @@ logger.setLevel(logging.DEBUG)
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
+db_url = os.environ.get('DATABASE_URL')
+db_url.split(":")
+if db_url[0] == "postgres":
+    db_url[0] = "postgresql"
+app.config['SQLALCHEMY_DATABASE_URI'] = ''.join(db_url)
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
