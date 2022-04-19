@@ -49,7 +49,7 @@ Ignore this email if you did not request a password reset.
 def clean_graph(graph_str):
     logger.debug(f'Cleaning submitted graph {graph_str} for {current_user}')
 
-    edges = graph_str.split(',')
+    edges = graph_str.lower().split(',')
     for i, edge in enumerate(edges):
         sorted_edge = edge.split('-')
         if sorted_edge[0] > sorted_edge[1]:
