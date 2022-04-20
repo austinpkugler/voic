@@ -40,18 +40,26 @@
               {% endif %}
 
               <b>Users:</b>
-              {% for user in document.user %}
-                {{ user.username }}
-              {% endfor %}
+              {% if document.user|length > 0 %}
+                {% for user in document.user %}
+                  {{ user.username }}
+                {% endfor %}
+              {% else %}
+                <i>None</i>
+              {% endif %}
 
               {% if request.MOBILE %}
                 <br>
               {% endif %}
 
               <b>Roles:</b>
-              {% for role in document.role %}
-                {{ role.title }}
-              {% endfor %}
+              {% if document.role|length > 0 %}
+                {% for role in document.role %}
+                  {{ role.title }}
+                {% endfor %}
+              {% else %}
+                <i>None</i>
+              {% endif %}
             </small>
           </div>
 

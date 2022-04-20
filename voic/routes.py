@@ -50,10 +50,12 @@ def clean_graph(graph_str):
     logger.debug(f'Cleaning submitted graph {graph_str} for {current_user}')
 
     edges = graph_str.lower().replace(' ', '').split(',')
-    if len(edges) != 2:
-        return graph_str
     for i, edge in enumerate(edges):
         sorted_edge = edge.split('-')
+
+        if len(sorted_edge) != 2:
+            return graph_str
+
         if sorted_edge[0] > sorted_edge[1]:
             sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
         edges[i] = '-'.join(sorted_edge)
@@ -285,13 +287,21 @@ def new_document():
     # Generate a form for creating a new document
     from voic.forms import DocumentForm
     form = DocumentForm()
-    form.init()
 
-    document = models.Document()
+    all_user_names = []
+    for user in models.User.query.order_by(models.User.username).all():
+        all_user_names.append((user.id, user.username))
+    form.users.choices = all_user_names
+
+    all_role_names = []
+    for role in models.Role.query.order_by(models.Role.title).all():
+        all_role_names.append((role.id, role.title))
+    form.roles.choices = all_role_names
 
     # If the form is submitted
     if form.validate_on_submit():
         # Set initial document attributes
+        document = models.Document()
         document.title = form.title.data
         document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
         document.graph = clean_graph(form.graph.data)
@@ -339,15 +349,15 @@ def edit_document(document_id):
     from voic.forms import DocumentForm
     form = DocumentForm()
 
-    _all_user_names = []
-    for user in models.User.query.all():
-        _all_user_names.append((user.id, user.username))
-    form.users.choices = _all_user_names
+    all_user_names = []
+    for user in models.User.query.order_by(models.User.username).all():
+        all_user_names.append((user.id, user.username))
+    form.users.choices = all_user_names
 
-    _all_role_names = []
-    for role in models.Role.query.all():
-        _all_role_names.append((role.id, role.title))
-    form.roles.choices = _all_role_names
+    all_role_names = []
+    for role in models.Role.query.order_by(models.Role.title).all():
+        all_role_names.append((role.id, role.title))
+    form.roles.choices = all_role_names
 
     # Get the document from id and check whether the user has permission
     document = models.Document.query.get(document_id)
@@ -356,8 +366,6 @@ def edit_document(document_id):
         logger.debug(f'{current_user} does not have permission to edit {document}!')
         logger.debug(f'Redirecting to home for {current_user}')
         return flask.redirect(flask.url_for('home'))
-
-
 
     # If the form is submitted
     if form.validate_on_submit():
