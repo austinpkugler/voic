@@ -2,7 +2,6 @@
 
 {% block content %}
   {% if current_user.is_authenticated %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='search-bar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <h1>My Documents</h1>
     <form method="POST" action="">
@@ -11,7 +10,7 @@
         <div class="input-group rounded">
           {% if form.search_bar.errors %}
             {{ form.search_bar(class="form-control rounded mr-2 is-invalid") }}
-            {{ form.submit(class="btn btn-outline-info mr-2") }}
+            {{ form.submit(class="btn btn-outline-primary mr-2") }}
             <div class="invalid-feedback">
               {% for error in form.search_bar.errors %}
                 <span>{{ error }}</span>
@@ -19,15 +18,16 @@
             </div>
           {% else %}
             {{ form.search_bar(class="form-control rounded mr-2") }}
-            {{ form.submit(class="btn btn-outline-info mr-2") }}
+            {{ form.submit(class="btn btn-outline-primary mr-2") }}
+            <a class="btn btn-outline-primary mr-2" href="{{ url_for('new_document') }}">Create</a>
           {% endif %}
         </div>
       </fieldset>
     </form>
-    <div class="input-group rounded mb-2">
-      <a class="btn btn-outline-info mr-2" href="{{ url_for('new_document') }}">Create</a>
+    <!-- <div class="input-group rounded mb-2">
+      <a class="btn btn-outline-primary mr-2" href="{{ url_for('new_document') }}">Create</a>
       <a class="btn btn-outline-danger mr-2" href="{{ url_for('delete_all_documents') }}">Delete All</a>
-    </div>
+    </div> -->
     {% for document in documents.items %}
       <article class="media content-section">
         <div class="media-body">
@@ -61,30 +61,26 @@
                 <i>None</i>
               {% endif %}
             </small>
+
+            {% if request.MOBILE %}
+              <a class="btn btn-outline-primary mr-1 btn-sm" href="{{ url_for('view_document', document_id=document.id) }}">View</a>
+              <a class="btn btn-outline-primary mr-1 btn-sm" href="{{ url_for('edit_document', document_id=document.id) }}">Edit</a>
+              <a class="btn btn-outline-primary mr-1 btn-sm" href="{{ url_for('duplicate_document', document_id=document.id) }}">Copy</a>
+              <a class="btn btn-outline-danger btn-sm" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
+            {% else %}
+              <a class="btn btn-outline-danger btn-sm float-right" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
+              <a class="btn btn-outline-primary mr-2 btn-sm float-right" href="{{ url_for('duplicate_document', document_id=document.id) }}">Copy</a>
+              <a class="btn btn-outline-primary mr-2 btn-sm float-right" href="{{ url_for('edit_document', document_id=document.id) }}">Edit</a>
+              <a class="btn btn-outline-primary mr-2 btn-sm float-right" href="{{ url_for('view_document', document_id=document.id) }}">View</a>
+            {% endif %}
           </div>
 
-          {% if request.MOBILE %}
-            <a class="btn btn-outline-info mr-1 btn-sm" href="{{ url_for('view_document', document_id=document.id) }}">View</a>
-            <a class="btn btn-outline-info mr-1 btn-sm" href="{{ url_for('edit_document', document_id=document.id) }}">Edit</a>
-            <a class="btn btn-outline-info mr-1 btn-sm" href="{{ url_for('duplicate_document', document_id=document.id) }}">Copy</a>
-            <a class="btn btn-outline-danger btn-sm" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
-          {% else %}
-            <a class="btn btn-outline-danger btn-sm float-right" href="{{ url_for('delete_document', document_id=document.id) }}">Delete</a>
-            <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('duplicate_document', document_id=document.id) }}">Copy</a>
-            <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('edit_document', document_id=document.id) }}">Edit</a>
-            <a class="btn btn-outline-info mr-2 btn-sm float-right" href="{{ url_for('view_document', document_id=document.id) }}">View</a>
-          {% endif %}
-
-          {% if request.MOBILE %}
-            <h3 class="mt-5">{{ document.title }}</h3>
-          {% else %}
-            <h3>{{ document.title }}</h3>
-          {% endif %}
+          <h3>{{ document.title }}</h3>
 
           {% if document.content|length > 1000 %}
-          <p class="article-content">{{ document.content[:1000] | safe }}... <a class="" href="{{ url_for('view_document', document_id=document.id) }}">Read More</a></p>
+            <p class="article-content">{{ document.content[:1000] | safe }}... <a class="" href="{{ url_for('view_document', document_id=document.id) }}">Read More</a></p>
           {% else %}
-          <p class="article-content limit-img-size">{{ document.content | safe }}</p>
+            <p class="article-content limit-img-size">{{ document.content | safe }}</p>
           {% endif %}
         </div>
       </article>
@@ -93,9 +89,9 @@
       {% for page_num in documents.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {% if page_num %}
           {% if documents.page == page_num %}
-            <a class="btn btn-info mb-4 mr-2" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+            <a class="btn btn-primary mb-4 mr-2" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
           {% else %}
-            <a class="btn btn-outline-info mb-4 mr-2" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+            <a class="btn btn-outline-primary mb-4 mr-2" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
           {% endif %}
         {% else %}
         {% endif %}
@@ -107,9 +103,9 @@
       While almost all of the documents we write, read, share, act on, process or archive are digital, their management remains archaic. This is particularly true in the case of most office and government systems. In business and government, documents chronicle and immortalize the evolution of thoughts, deliberations, laws and decisions for the for the past as historical records, the present and the future. While the traditional paper-based hard copies serve as reliable preservation medium, they are vulnerable to theft, destruction and loss.
     </p>
     <p>
-      <img src="{{ url_for('static', filename='img/devices.png') }}" alt="desktop" class="float-left mr-2">
+      <img src="{{ url_for('static', filename='img/devices-medium.png') }}" alt="desktop" class="float-left mr-2">
       On the other hand, digital documents are prone to cybercrimes of various kinds, but less prone to destruction due to aging, fading or loss. With proper safeguards in place, they are largely indestructible. Yet, a robust office document management system is mostly absent. In this project, we develop a new web-based document processing and management system called <u><i>V</i></u>irtual <u><i>O</i></u>ffice in the <u><i>C</i></u>loud}, or <i>VOiC</i> (pronounced voice), to create, share, query and update office documents. In VOiC, we make provisions to support decision workflows, virtual office and provenance and privacy based on role-based authorization. The system is based upon a recently proposed model for document management in virtual offices.
     </p>
-    <a class="btn btn-outline-info mb-5 btn-lg d-flex justify-content-center" href="{{ url_for('sign_up') }}">Try It Now</a>
+    <a class="btn btn-outline-primary mb-5 btn-lg d-flex justify-content-center" href="{{ url_for('sign_up') }}">Try It Now</a>
   {% endif %}
 {% endblock %}

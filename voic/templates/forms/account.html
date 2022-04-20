@@ -5,7 +5,7 @@
     <div class="media">
       <img class="rounded-circle account-img" src="{{ picture }}">
       <div class="media-body">
-        <h2 class="account-heading">{{ current_user.username }}</h2>
+        <h2 class="display-4">{{ current_user.username }}</h2>
         <p class="text-secondary">{{ current_user.email }}</p>
       </div>
     </div>
@@ -64,7 +64,7 @@
         </div>
       </fieldset>
       <div class="form-group">
-        {{ form.submit(class="btn btn-outline-info") }}
+        {{ form.submit(class="btn btn-outline-primary") }}
         <a class="btn btn-outline-danger mr-2" href="{{ url_for('home') }}">Cancel</a>
       </div>
     </form>
