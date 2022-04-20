@@ -4,7 +4,7 @@ A project by Austin Kugler and Hayden Carroll for CS-360.
 # Description
 While almost all of the documents we write, read, share, act on, process or archive are digital, their management remains archaic. In VOiC, we make provisions to support decision workflows, virtual office and provenance and privacy based on role-based authorization. The system is based upon a recently proposed model for document management in virtual offices.
 
-![devices](https://user-images.githubusercontent.com/44652750/163325915-b78a74f1-d32b-435a-bdba-f72fb105a610.png)
+<img src="https://user-images.githubusercontent.com/44652750/164312648-96685e48-f765-4512-a5e2-14ab4f99e6bc.png" alt="drawing" width="200"/>
 
 # Setup
 Run the following commands:
