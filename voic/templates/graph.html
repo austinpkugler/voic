@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Network</title>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+    <style type="text/css">
+      #mynetwork {
+        width: 600px;
+        height: 400px;
+        background-color: #f3f5fa;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mynetwork"></div>
+
+    <div id="network-popUp">
+      <h2 id="operation"></h2>
+      <label for="node-label">Label for Node</label>
+      <input type="text" id="node-label" label="Node Label">
+      <br>
+      <button id="saveButton">Save</button>
+      <button id="cancelButton">Cancel</button>
+    </div>
+
+    <script type="text/javascript">
+
+      var myNodes = new vis.DataSet([
+        { id: 1, label: "Bean"}
+      ]);
+      var lastId = 1;
+      // create an array with edges
+      var edges = new vis.DataSet([
+      ]);
+      function saveData(data, callback) {
+        data.label = document.getElementById("node-label").value;
+        clearPopUp();
+        callback(data);
+      }
+
+      function clearPopUp() {
+        document.getElementById("saveButton").onclick = null;
+        document.getElementById("cancelButton").onclick = null;
+        document.getElementById("network-popUp").style.display = "none";
+      }
+
+      function getNewId() {
+        lastId += 1;
+        return lastId;
+      }
+    
+      function cancelEdit(callback) {
+        clearPopUp();
+        callback(null);
+      }
+      // create an array with nodes
+
+
+      // create a network
+      var container = document.getElementById("mynetwork");
+      document.getElementById("network-popUp").style.display = "none";
+      var data = {
+        nodes: myNodes,
+        edges: edges,
+      };
+      var locales = {
+        en: {
+          edit: 'Edit',
+          del: 'Delete selected',
+          back: 'Back',
+          addNode: 'Add Node',
+          addEdge: 'Add Edge',
+          editNode: 'Edit Node',
+          editEdge: 'Edit Edge',
+          addDescription: 'Click in an empty space to place a new node.',
+          edgeDescription: 'Click on a node and drag the edge to another node to connect them.',
+          editEdgeDescription: 'Click on the control points and drag them to a node to connect to it.',
+          createEdgeError: 'Cannot link edges to a cluster.',
+          deleteClusterError: 'Clusters cannot be deleted.',
+          editClusterError: 'Clusters cannot be edited.'
+        }
+      }
+
+      var options = {
+          locale: "en",
+          interaction: { keyboard: true },
+          manipulation: {
+            addNode: function (data, callback) {
+              data.id = getNewId();
+              document.getElementById("operation").innerText = "Add Node";
+              document.getElementById("node-label").value = "";
+              document.getElementById("saveButton").onclick = saveData.bind(
+                this,
+                data,
+                callback
+              );
+              document.getElementById("cancelButton").onclick =
+                clearPopUp.bind();
+              document.getElementById("network-popUp").style.display = "block";
+            },
+            editNode: function (data, callback) {
+              // filling in the popup DOM elements
+              console.log(data.id);
+              document.getElementById("operation").innerText = "Edit Node";
+              document.getElementById("node-label").value = data.label;
+              document.getElementById("saveButton").onclick = saveData.bind(
+                this,
+                data,
+                callback
+              );
+              document.getElementById("cancelButton").onclick = cancelEdit.bind(
+                this,
+                callback
+              );
+              document.getElementById("network-popUp").style.display = "block";
+            },
+            addEdge: function (data, callback) {
+              callback(data);
+            },
+          },
+          nodes: {
+            color: {
+            background: "#a8aabc",
+            border: "#007bff",
+            highlight: { border: "#444655", background: "#007bff" }
+            },
+            shape: "dot",
+            borderWidth: 2,
+          },
+          physics: {
+            barnesHut: {
+              theta: 0.1,
+              gravitationalConstant: 0,
+              centralGravity: 0,
+              springLength: 0,
+              springConstant: 0
+            },
+            minVelocity: 0.75
+          }
+        };
+      var network = new vis.Network(container, data, options);
+      network.enableEditMode();
+    </script>
+  </body>
+</html>
