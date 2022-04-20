@@ -59,7 +59,7 @@ def clean_graph(graph_str):
 def save_document(document, form):
     # Set initial document attributes
     document.title = form.title.data
-    document.content = BeautifulSoup(markupsafe.Markup(form.content.data)).prettify()
+    document.content = BeautifulSoup(markupsafe.Markup(form.content.data), features='html.parser').prettify()
     document.graph = clean_graph(form.graph.data)
     document.updated_at = datetime.now(timezone.utc)
     document.creator_id = current_user.id
