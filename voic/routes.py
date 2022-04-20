@@ -85,11 +85,11 @@ def save_document(document, form):
 
 
 def get_user_choices():
-    return [tuple(t) for t in db.session.query(models.User.id, models.User.username)]
+    return [tuple(t) for t in db.session.query(models.User.id, models.User.username).order_by(models.User.username)]
 
 
 def get_role_choices():
-    return [tuple(t) for t in db.session.query(models.Role.id, models.Role.title)]
+    return [tuple(t) for t in db.session.query(models.Role.id, models.Role.title).order_by(models.Role.title)]
 
 
 @app.route('/', methods=['GET', 'POST'])
