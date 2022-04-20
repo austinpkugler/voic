@@ -9,6 +9,15 @@
         <p class="text-secondary">{{ current_user.email }}</p>
       </div>
     </div>
+    <form>
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-2">Danger Zone</legend>
+        <div class="form-group">
+          <p class="form-control-label">In the Danger Zone you can irreversible delete your documents and account.</p>
+          <a class="btn btn-danger mr-2" href="{{ url_for('danger_zone') }}">Open Danger Zone</a>
+        </div>
+      </fieldset>
+    </form>
     <form method="POST" action="" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       <fieldset class="form-group">
@@ -67,11 +76,11 @@
         {{ form.submit(class="btn btn-outline-primary") }}
         <a class="btn btn-outline-danger mr-2" href="{{ url_for('home') }}">Cancel</a>
       </div>
+      <div class="border-top pt-1">
+        <small class="text-muted">
+          *Why is Employee selected? All users are automatically assigned this role.
+        </small>
+      </div>
     </form>
-    <div class="border-top pt-1">
-      <small class="text-muted">
-        *Why is Employee selected? All users are automatically assigned this role.
-      </small>
-    </div>
   </div>
 {% endblock %}
