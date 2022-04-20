@@ -20,11 +20,12 @@ db_url = db_url.split(':')
 if db_url[0] == 'postgres':
     db_url[0] = 'postgresql'
 app.config['SQLALCHEMY_DATABASE_URI'] = ':'.join(db_url)
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASSWOPRD')
+app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASSWORD')
 
 mobility = flask_mobility.Mobility(app)
 db = flask_sqlalchemy.SQLAlchemy(app)
