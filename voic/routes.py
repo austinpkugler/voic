@@ -39,12 +39,12 @@ Ignore this email if you did not request a password reset.
 
 
 def clean_graph(graph_str):
-    edges = graph_str.lower().replace(' ', '').split(',')
+    if len(graph_str) == 0:
+        return graph_str
+    edges = graph_str.lower().split(',')
     for i, edge in enumerate(edges):
+        edge = edge.strip()
         sorted_edge = edge.split('-')
-
-        if len(sorted_edge) != 2:
-            return graph_str
 
         if sorted_edge[0] > sorted_edge[1]:
             sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
