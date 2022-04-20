@@ -14,7 +14,7 @@ dotenv.load_dotenv()
 
 
 logger = logging.getLogger(__name__)
-FORMAT = "[ %(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
+FORMAT = '[ %(filename)s:%(lineno)s - %(funcName)s() ] %(message)s'
 logging.basicConfig(format=FORMAT)
 logger.setLevel(logging.DEBUG)
 
@@ -22,9 +22,9 @@ app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db_url = os.environ.get('DATABASE_URL')
-db_url = db_url.split(":")
-if db_url[0] == "postgres":
-    db_url[0] = "postgresql"
+db_url = db_url.split(':')
+if db_url[0] == 'postgres':
+    db_url[0] = 'postgresql'
 app.config['SQLALCHEMY_DATABASE_URI'] = ':'.join(db_url)
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
@@ -40,5 +40,3 @@ mail = flask_mail.Mail(app)
 ckeditor = flask_ckeditor.CKEditor(app)
 
 from voic import routes
-
-logger.debug(f'Flask app was successfully initialized')
