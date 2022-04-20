@@ -7,16 +7,10 @@ import flask_mobility
 import flask_mail
 import dotenv
 
-import logging
 import os
 
 dotenv.load_dotenv()
 
-
-logger = logging.getLogger(__name__)
-FORMAT = '[ %(filename)s:%(lineno)s - %(funcName)s() ] %(message)s'
-logging.basicConfig(format=FORMAT)
-logger.setLevel(logging.DEBUG)
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')

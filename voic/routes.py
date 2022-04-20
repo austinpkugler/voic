@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import os
 import secrets
 
-from voic import logger, app, db, bcrypt, mail, models
+from voic import app, db, bcrypt, mail, models
 
 
 def save_picture(picture_data):
