@@ -9,7 +9,7 @@
       <fieldset class="form-group">
         <div class="input-group rounded">
           {% if form.search_bar.errors %}
-            {{ form.search_bar(class="form-control rounded mr-2 is-invalid") }}
+            {{ form.search_bar(**{'data-toggle': 'tooltip', 'title': 'Precede your search with graph: to perform a graph search.', 'class': 'form-control rounded mr-2 is-invalid', 'data-placement': 'right'}) }}
             {{ form.submit(class="btn btn-outline-primary mr-2") }}
             <div class="invalid-feedback">
               {% for error in form.search_bar.errors %}
@@ -17,7 +17,7 @@
               {% endfor %}
             </div>
           {% else %}
-            {{ form.search_bar(class="form-control rounded mr-2") }}
+            {{ form.search_bar(**{'data-toggle': 'tooltip', 'title': 'Precede your search with graph: to perform a graph search.', 'class': 'form-control rounded mr-2', 'data-placement': 'right'}) }}
             {{ form.submit(class="btn btn-outline-primary mr-2") }}
             <a class="btn btn-outline-primary mr-2" href="{{ url_for('new_document') }}">Create</a>
           {% endif %}
