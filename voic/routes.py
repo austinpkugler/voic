@@ -50,10 +50,12 @@ def clean_graph(graph_str):
     logger.debug(f'Cleaning submitted graph {graph_str} for {current_user}')
 
     edges = graph_str.lower().replace(' ', '').split(',')
-    if len(edges) != 2:
-        return graph_str
     for i, edge in enumerate(edges):
         sorted_edge = edge.split('-')
+
+        if len(sorted_edge) != 2:
+            return graph_str
+
         if sorted_edge[0] > sorted_edge[1]:
             sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
         edges[i] = '-'.join(sorted_edge)
@@ -356,8 +358,6 @@ def edit_document(document_id):
         logger.debug(f'{current_user} does not have permission to edit {document}!')
         logger.debug(f'Redirecting to home for {current_user}')
         return flask.redirect(flask.url_for('home'))
-
-
 
     # If the form is submitted
     if form.validate_on_submit():
