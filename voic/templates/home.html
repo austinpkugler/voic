@@ -20,14 +20,15 @@
           {% else %}
             {{ form.search_bar(class="form-control rounded mr-2") }}
             {{ form.submit(class="btn btn-outline-info mr-2") }}
+            <a class="btn btn-outline-info mr-2" href="{{ url_for('new_document') }}">Create</a>
           {% endif %}
         </div>
       </fieldset>
     </form>
-    <div class="input-group rounded mb-2">
+    <!-- <div class="input-group rounded mb-2">
       <a class="btn btn-outline-info mr-2" href="{{ url_for('new_document') }}">Create</a>
       <a class="btn btn-outline-danger mr-2" href="{{ url_for('delete_all_documents') }}">Delete All</a>
-    </div>
+    </div> -->
     {% for document in documents.items %}
       <article class="media content-section">
         <div class="media-body">
