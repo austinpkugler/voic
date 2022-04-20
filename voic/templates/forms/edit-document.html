@@ -32,6 +32,9 @@
         </div>
         <div class="form-group">
           {{ form.graph.label(class="form-control-label") }}
+          <small class="text-muted">
+            <a href="{{ url_for('help') }}">What's this?</a>
+          </small>
           {% if form.graph.errors %}
             {{ form.graph(**{'data-toggle': 'tooltip', 'title': 'Enter each edge with two vertices in the format v1-v2,v2-v3.', 'class': 'form-control form-control-lg is-invalid', 'data-placement': 'right'}) }}
             <div class="invalid-feedback">

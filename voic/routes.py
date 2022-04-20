@@ -489,3 +489,8 @@ def delete_account():
 
     # Redirect to the home page
     return flask.redirect(flask.url_for('home'))
+
+
+@app.route('/help')
+def help():
+    return flask.render_template('help.html', title='Help')
