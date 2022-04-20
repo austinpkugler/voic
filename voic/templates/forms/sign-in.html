@@ -38,15 +38,15 @@
         </div>
       </fieldset>
       <div class="form-group">
-        {{ form.submit(class="btn btn-outline-info") }}
+        {{ form.submit(class="btn btn-outline-primary") }}
+      </div>
+      <div class="border-top pt-1">
+        <small class="text-muted">
+          Forgot your password? <a href="{{ url_for('request_password_reset') }}">Reset</a>
+          <br>
+          Need an account? <a href="{{ url_for('sign_up') }}">Sign Up</a>
+        </small>
       </div>
     </form>
-  </div>
-  <div class="border-top pt-1">
-    <small class="text-muted">
-      Forgot your password? <a href="{{ url_for('request_password_reset') }}">Reset</a>
-      <br>
-      Need an account? <a href="{{ url_for('sign_up') }}">Sign Up</a>
-    </small>
   </div>
 {% endblock %}

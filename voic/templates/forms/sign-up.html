@@ -60,13 +60,13 @@
         </div>
       </fieldset>
       <div class="form-group">
-        {{ form.submit(class="btn btn-outline-info") }}
+        {{ form.submit(class="btn btn-outline-primary") }}
+      </div>
+      <div class="border-top pt-1">
+        <small class="text-muted">
+          Already have an account? <a href="{{ url_for('sign_in') }}">Sign In</a>
+        </small>
       </div>
     </form>
-  </div>
-  <div class="border-top pt-1">
-    <small class="text-muted">
-      Already have an account? <a href="{{ url_for('sign_in') }}">Sign In</a>
-    </small>
   </div>
 {% endblock %}
