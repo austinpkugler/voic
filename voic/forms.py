@@ -65,11 +65,7 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
     email = StringField('Email', validators=VALID_EMAIL)
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 
-    _all_role_titles = []
-    for role in models.Role.query.all():
-        _all_role_titles.append((role.id, role.title))
-
-    roles = SelectMultipleField('Select your roles.*', choices=_all_role_titles, coerce=int)
+    roles = SelectMultipleField('Select your roles.*', choices=[], coerce=int)
     submit = SubmitField('Update')
 
     def validate_username(self, username):
@@ -91,19 +87,11 @@ class DocumentForm(flask_wtf.FlaskForm):
     graph = StringField('Graph', validators=VALID_GRAPH)
     submit = SubmitField('Save')
 
-    _all_role_titles = []
-    for role in models.Role.query.all():
-        _all_role_titles.append((role.id, role.title))
-
     _role_field_text = 'Select roles that can read, edit, and delete this document.*'
-    roles = SelectMultipleField(_role_field_text, choices=_all_role_titles, coerce=int)
-
-    _all_user_names = []
-    for user in models.User.query.all():
-        _all_user_names.append((user.id, user.username))
+    roles = SelectMultipleField(_role_field_text, choices=[], coerce=int)
 
     _user_field_text = 'Select users that can read, edit, and delete this document.**'
-    users = SelectMultipleField(_user_field_text, choices=_all_user_names, coerce=int)
+    users = SelectMultipleField(_user_field_text, choices=[], coerce=int)
 
 
 class RequestPasswordResetForm(flask_wtf.FlaskForm):
