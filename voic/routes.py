@@ -50,6 +50,8 @@ def clean_graph(graph_str):
     logger.debug(f'Cleaning submitted graph {graph_str} for {current_user}')
 
     edges = graph_str.lower().replace(' ', '').split(',')
+    if len(edges) != 2:
+        return graph_str
     for i, edge in enumerate(edges):
         sorted_edge = edge.split('-')
         if sorted_edge[0] > sorted_edge[1]:
@@ -220,6 +222,11 @@ def account():
     from voic.forms import UpdateAccountForm
     form = UpdateAccountForm()
 
+    all_role_titles = []
+    for role in models.Role.query.order_by(models.Role.title).all():
+        all_role_titles.append((role.id, role.title))
+    form.roles.choices = all_role_titles
+
     # If the form is submitted
     if form.validate_on_submit():
         # Save and set the new picture if the user updated their picture
@@ -278,6 +285,7 @@ def new_document():
     # Generate a form for creating a new document
     from voic.forms import DocumentForm
     form = DocumentForm()
+    form.init()
 
     document = models.Document()
 
@@ -327,6 +335,19 @@ def new_document():
 @flask_login.login_required
 def edit_document(document_id):
     logger.debug(f'Routed to /edit-document/{document_id}')
+    # Generate a form for editing an existing document
+    from voic.forms import DocumentForm
+    form = DocumentForm()
+
+    _all_user_names = []
+    for user in models.User.query.all():
+        _all_user_names.append((user.id, user.username))
+    form.users.choices = _all_user_names
+
+    _all_role_names = []
+    for role in models.Role.query.all():
+        _all_role_names.append((role.id, role.title))
+    form.roles.choices = _all_role_names
 
     # Get the document from id and check whether the user has permission
     document = models.Document.query.get(document_id)
@@ -336,9 +357,7 @@ def edit_document(document_id):
         logger.debug(f'Redirecting to home for {current_user}')
         return flask.redirect(flask.url_for('home'))
 
-    # Generate a form for editing an existing document
-    from voic.forms import DocumentForm
-    form = DocumentForm()
+
 
     # If the form is submitted
     if form.validate_on_submit():
@@ -346,6 +365,7 @@ def edit_document(document_id):
         document.title = form.title.data
         document.content = BeautifulSoup(markupsafe.Markup(form.content.data), features='html.parser').prettify()
         document.graph = clean_graph(form.graph.data)
+        document.updated_at = datetime.now(timezone.utc)
 
         # Reset users and roles who have access
         document.user = []
