@@ -467,3 +467,25 @@ def reset_password(token):
         return flask.redirect(flask.url_for('sign_in'))
 
     return flask.render_template('forms/reset-password.html', title='Reset Your Password', form=form)
+
+
+@app.route('/danger-zone')
+@flask_login.login_required
+def danger_zone():
+    # Render the account page with the user's profile picture
+    path = os.path.join('img', 'profile', current_user.picture)
+    picture = flask.url_for('static', filename=path)
+
+    return flask.render_template('forms/danger-zone.html', title='Danger Zone', picture=picture)
+
+
+@app.route('/delete-account')
+@flask_login.login_required
+def delete_account():
+    # Delete the user from the database
+    db.session.delete(current_user)
+    db.session.commit()
+    flask.flash('Your account was deleted.', 'success')
+
+    # Redirect to the home page
+    return flask.redirect(flask.url_for('home'))
