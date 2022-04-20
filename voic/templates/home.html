@@ -2,7 +2,6 @@
 
 {% block content %}
   {% if current_user.is_authenticated %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='search-bar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <h1>My Documents</h1>
     <form method="POST" action="">
