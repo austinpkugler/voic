@@ -90,7 +90,7 @@ class DocumentForm(flask_wtf.FlaskForm):
     _role_field_text = 'Select roles that can read, edit, and delete this document.*'
     roles = SelectMultipleField(_role_field_text, choices=[], coerce=int)
 
-    _user_field_text = 'Select users that can read, edit, and delete this document.**'
+    _user_field_text = 'Select users that can read, edit, and delete this document.'
     users = SelectMultipleField(_user_field_text, choices=[], coerce=int)
 
 
