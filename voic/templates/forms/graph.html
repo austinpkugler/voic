@@ -26,15 +26,39 @@
       <button id="cancelButton">Cancel</button>
     </div>
 
+    <form action="" method="post">
+        <button name="Submit Graph" value="Graph Submit">Submit</button>
+    </form>
+    
     <script type="text/javascript">
 
-      var myNodes = new vis.DataSet([
-        { id: 1, label: "Bean"}
+      var nodes = new vis.DataSet([
       ]);
       var lastId = 1;
       // create an array with edges
       var edges = new vis.DataSet([
       ]);
+      function convertFromBackendGraphObj(backendGraphObj) {
+        backendGraphObj = unJsonify(backendGraphObj);
+        console.log(backendGraphObj.edges);
+        nodes.add(backendGraphObj.nodes);
+        edges.add(backendGraphObj.edges);
+      }
+
+      function unJsonify(vars) {
+          return vars;
+      }
+
+      function convertToBackendGraphObj() {
+        return {
+          edges: edges,
+          nodes: nodes
+        }
+      }
+
+
+      convertFromBackendGraphObj({{backendGraph|tojson}});
+      
       function saveData(data, callback) {
         data.label = document.getElementById("node-label").value;
         clearPopUp();
@@ -63,7 +87,7 @@
       var container = document.getElementById("mynetwork");
       document.getElementById("network-popUp").style.display = "none";
       var data = {
-        nodes: myNodes,
+        nodes: nodes,
         edges: edges,
       };
       var locales = {
@@ -103,7 +127,6 @@
             },
             editNode: function (data, callback) {
               // filling in the popup DOM elements
-              console.log(data.id);
               document.getElementById("operation").innerText = "Edit Node";
               document.getElementById("node-label").value = data.label;
               document.getElementById("saveButton").onclick = saveData.bind(

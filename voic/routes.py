@@ -151,6 +151,18 @@ def home():
         # If the user is not signed in, render home with no documents
         return flask.render_template('home.html')
 
+@app.route('/graph', methods=['GET', 'POST'])
+@flask_login.login_required
+def graph():
+    if flask.request.method == 'GET':
+         # pass a graph over
+         graph = {'nodes': [{'id': 3, 'label': 'Hello3'}, {'id': 1, 'label': 'Hello1'}], 'edges': [{'from': 1, 'to': 3},]}
+         return flask.render_template('forms/graph.html', backendGraph=graph) 
+    elif flask.request.method == 'POST':
+        # get the graph
+        content = flask.request.json
+
+        pass
 
 @app.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
