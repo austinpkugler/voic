@@ -80,7 +80,7 @@ class Role(db.Model):
 class Document(db.Model):
     __tablename__ = 'document'
     id = db.Column(db.Integer, primary_key=True)
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(320), nullable=False)
     content = db.Column(db.Text)
     graph = db.Column(db.String(320))
