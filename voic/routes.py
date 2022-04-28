@@ -46,8 +46,8 @@ def clean_graph(graph_str):
         edge = edge.strip()
         sorted_edge = edge.split('-')
 
-        if sorted_edge[0] > sorted_edge[1]:
-            sorted_edge[0], sorted_edge[1] = sorted_edge[1], sorted_edge[0]
+        if sorted_edge[0] > sorted_edge[2]:
+            sorted_edge[0], sorted_edge[2] = sorted_edge[2], sorted_edge[0]
         edges[i] = '-'.join(sorted_edge)
 
     edges = list(set(edges))
