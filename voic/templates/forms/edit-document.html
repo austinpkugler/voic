@@ -86,8 +86,8 @@
   </div>
   {{ ckeditor.load() }}
   {% if request.MOBILE %}
-    {{ ckeditor.config(name='content', height=200)}}
+    {{ ckeditor.config(name='content', height=200, custom_config="allowedContent: true") }}
   {% else %}
-    {{ ckeditor.config(name='content', height=500)}}
+    {{ ckeditor.config(name='content', height=500, custom_config="allowedContent: true") }}
   {% endif %}
 {% endblock content %}

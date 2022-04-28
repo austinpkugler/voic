@@ -59,11 +59,23 @@ def clean_graph(graph_str):
 def save_document(document, form):
     # Set initial document attributes
     document.title = form.title.data
-    document.content = BeautifulSoup(markupsafe.Markup(form.content.data), features='html.parser').prettify()
+    document.content = form.content.data
+    document.content = str(BeautifulSoup(markupsafe.Markup(document.content), features='html.parser'))
     document.graph = clean_graph(form.graph.data)
     document.updated_at = datetime.now(timezone.utc)
     document.creator_id = current_user.id
     document.role = []
+
+    # update the embedded graph
+    soup = BeautifulSoup(document.content, 'html.parser')
+    old_embedded_graph = soup.find('document-graph')
+    if not old_embedded_graph: # if there isnt a document-graph tag
+        # add document graph tag, and restart the html parser, and find tag
+        document.content += "<document-graph hidden=\"\"></document-graph>"
+        soup = BeautifulSoup(document.content, 'html.parser')
+        old_embedded_graph = soup.find('document-graph')
+    new_embedded_graph = f"<document-graph hidden=\"\">{document.graph}</document-graph>"
+    document.content = document.content.replace(str(old_embedded_graph), new_embedded_graph)
 
     # Reset users and roles who have access
     document.user = []
@@ -279,6 +291,9 @@ def new_document():
 
     form.users.choices = get_user_choices()
     form.roles.choices = get_role_choices()
+    # adds empty embedded graph when creating NEW document
+    if not form.content.data:
+        form.content.data = "<document-graph hidden=\"\"></document-graph>"
 
     # If the form is submitted
     if form.validate_on_submit():
