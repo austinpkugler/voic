@@ -135,12 +135,14 @@ def home():
             if form.search_bar.data.startswith('graph:'):
                 graph_query = clean_graph(form.search_bar.data[6:])
                 form.search_bar.data = 'graph:' + graph_query
+                graph_query = [models.Document.content.contains(x) for x in graph_query.split(',')]
+                print(graph_query)
 
                 documents = (
                     models.Document.query.filter(
                         models.Document.id.in_(document_ids)
                     )
-                    .filter(models.Document.graph.contains(graph_query))
+                    .filter(sqlalchemy.and_(*graph_query))
                     .order_by(models.Document.updated_at.desc())
                     .paginate(page=page, per_page=5)
                 )
