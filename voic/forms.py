@@ -28,9 +28,9 @@ VALID_TITLE = [DataRequired(), Length(min=1, max=320)]
 VALID_CONTENT = [Length(min=0, max=32000)]
 
 #any letter or digit, followed by an optional any letter or digit with a space, but cant end in a space
-vertexName = r'([A-Za-z0-9])+(([A-Za-z0-9 ]*[A-Za-z0-9]+)|([A-Za-z0-9]*))'
-edgeName = vertexName # vertexes and edges happen to have the same requirements for names
-edge = vertexName + r'-' + edgeName + r'-' + vertexName
+vertex_name = r'([A-Za-z0-9])+(([A-Za-z0-9 ]*[A-Za-z0-9]+)|([A-Za-z0-9]*))'
+edge_name = vertex_name # vertexes and edges happen to have the same requirements for names
+edge = vertex_name + r'-' + edge_name + r'-' + vertex_name
 graph = r'(' + edge + r'(,|, ))*' + edge + r'$|^$'
 VALID_GRAPH = [Length(min=0, max=320), Regexp(graph)]
 VALID_SEARCH = [Length(min=0, max=320), Regexp(r'(^(?!graph:).*$)|(^graph:' + graph + r')')]
