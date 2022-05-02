@@ -391,7 +391,7 @@ def duplicate_document(document_id):
 
     # Get and duplicate the document by creating a new document with the same content
     old = models.Document.query.get(document_id)
-    new = models.Document(title=old.title + ' - Copy', content=old.content, creator_id=old.creator_id, graph=old.graph)
+    new = models.Document(title=old.title + ' - Copy', content=old.content, graph=old.graph)
     new.role = old.role
     new.user = old.user
     db.session.add(new)
